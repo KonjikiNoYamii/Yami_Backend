@@ -1,4 +1,4 @@
-export const infoWaifu = {
+export const info = {
   yami:{
     name:"Konjiki No Yami",
     real_name:"Eve",
