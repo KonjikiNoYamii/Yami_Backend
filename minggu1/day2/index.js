@@ -11,7 +11,7 @@ const server = http.createServer((req, res) => {
   if (url === "/") {
     res.write(JSON.stringify({ status: "Succes", waifu: "waifu" }));
 
-   //global
+    //global
   } else if (url === "/waifu") {
     res.write(JSON.stringify(waifu));
   } else if (url === "/waifu/info") {
@@ -52,6 +52,8 @@ const server = http.createServer((req, res) => {
     res.write(JSON.stringify(info.victorique.name));
   } else if (url === "/waifu/victorique/real_name") {
     res.write(JSON.stringify(info.victorique.real_name));
+  } else if (url === "/waifu/victorique/age") {
+    res.write(JSON.stringify(info.victorique.age));
   } else if (url === "/waifu/victorique/likes") {
     res.write(JSON.stringify(info.victorique.likes));
   } else if (url === "/waifu/victorique/image") {
@@ -59,15 +61,16 @@ const server = http.createServer((req, res) => {
 
     //error
   } else {
-    res.write(JSON.stringify({ status:"error", message:"page not found" }));
+    res.write(JSON.stringify({ status: "error", message: "page not found" }));
   }
 
   res.end();
 });
 
-
 const hostname = "127.0.0.1";
 const port = 3000;
 server.listen(port, hostname, () => {
-  console.log(`Server running at ${hostname}:${port} on ${moment().calendar()}`);
+  console.log(
+    `Server running at ${hostname}:${port} on ${moment().calendar()}`
+  );
 });

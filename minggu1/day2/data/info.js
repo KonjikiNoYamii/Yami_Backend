@@ -16,6 +16,7 @@ export const info = {
   victorique:{
     name:"Victorique De Blois",
     real_name:"Victorique",
+    age:15,
     likes:"Sweet food, Books",
     image:"https://i.pinimg.com/1200x/dc/fc/df/dcfcdf7dc5d3a109fd1a4e6bd4a16c3f.jpg"
   }
