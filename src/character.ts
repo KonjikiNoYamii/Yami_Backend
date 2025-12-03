@@ -1,4 +1,30 @@
-export let characters = [
+interface CharacterStats {
+  attack?: number;
+  critChance?: number;
+  element?: string;
+  magic?: number;
+  charm?: number;
+  speed?: number;
+  aggression?: number;
+  agility?: number;
+  mana?: number;
+  magicDefense?: number;
+  magicPower?: number;
+  poisonDamage?: number;
+}
+
+interface Character {
+  id: number;
+  name: string;
+  category: string;
+  rarity: string;
+  power: number;
+  stats?: CharacterStats;  
+  effect?: string;          
+  description: string;
+}
+
+export let characters:Character[] = [
   {
     id: 1,
     name: "Saber",
