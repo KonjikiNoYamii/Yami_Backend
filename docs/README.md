@@ -1,136 +1,104 @@
-- toko_laptop_db=# create table laptop(
-id serial primary key,name varchar(100) not null,
-category varchar(100) not null,
-price integer not null,
-is_active boolean default true,
-toko_laptop_db(# created_at timestamp default current_timestamp)
-toko_laptop_db-# ;
+toko_laptop_db=# CREATE TABLE categories (
+toko_laptop_db(#     id SERIAL PRIMARY KEY,
+toko_laptop_db(#     name VARCHAR(100) NOT NULL
+toko_laptop_db(# );
 CREATE TABLE
-toko_laptop_db=# select * from laptop
-toko_laptop_db-# ;
- id | name | category | price | is_active | created_at 
-----+------+----------+-------+-----------+------------
-(0 rows)
 
-- toko_laptop_db=# INSERT INTO laptop (name, category, price) VALUES
-('ASUS ROG Strix G15', 'laptop', 19500000),
-('Acer Nitro 5', 'laptop', 8500000),
-('Lenovo ThinkPad X1 Carbon', 'laptop', 23000000),
-('HP Pavilion 14', 'laptop', 6500000),
-('Dell XPS 13', 'laptop', 21000000),
-('ASUS VivoBook 15', 'laptop', 5500000),
-('Lenovo Legion 5', 'laptop', 18000000),
-('MacBook Air M1', 'laptop', 20000000),
-('HP Victus 15', 'laptop', 9000000),
-('Logitech MX Master 3S Mouse', 'accessoris', 1200000),
-('Rexus Legionare Headset HX20', 'accessoris', 450000),
-('Keychron K2 Mechanical Keyboard', 'accessoris', 1200000),
-('Cooler Master Laptop Cooling Pad', 'accessoris', 350000),
-('WD My Passport External HDD 1TB', 'accessoris', 900000),
-('Sandisk Ultra 128GB Flashdisk 128GB', 'accessoris', 150000),
-('Logitech C920 HD Webcam', 'accessoris', 1100000),
-('Anker USB-C Hub 7-in-1', 'accessoris', 650000),
-('TP-Link AC1300 WiFi Adapter', 'accessoris', 300000),
-('Ugreen Adjustable Laptop Stand', 'accessoris', 250000);
-INSERT 0 19
+toko_laptop_db=# CREATE TABLE items (
+toko_laptop_db(#     id SERIAL PRIMARY KEY,
+toko_laptop_db(#     name VARCHAR(100) NOT NULL,
+toko_laptop_db(#     price INTEGER NOT NULL,
+toko_laptop_db(#     is_active BOOLEAN DEFAULT true,
+toko_laptop_db(#     created_at TIMESTAMP DEFAULT current_timestamp,
+toko_laptop_db(#     category_id INT
+toko_laptop_db(# );
+CREATE TABLE
 
-- toko_laptop_db=# select * from laptop where price > 5000000;
- id |           name            | category |  price   | is_active |         created_at         
-----+---------------------------+----------+----------+-----------+----------------------------
-  1 | ASUS ROG Strix G15        | laptop   | 19500000 | t         | 2025-12-08 16:54:11.775284
-  2 | Acer Nitro 5              | laptop   |  8500000 | t         | 2025-12-08 16:54:11.775284
-  3 | Lenovo ThinkPad X1 Carbon | laptop   | 23000000 | t         | 2025-12-08 16:54:11.775284
-  4 | HP Pavilion 14            | laptop   |  6500000 | t         | 2025-12-08 16:54:11.775284
-  5 | Dell XPS 13               | laptop   | 21000000 | t         | 2025-12-08 16:54:11.775284
-  6 | ASUS VivoBook 15          | laptop   |  5500000 | t         | 2025-12-08 16:54:11.775284
-  7 | Lenovo Legion 5           | laptop   | 18000000 | t         | 2025-12-08 16:54:11.775284
-  8 | MacBook Air M1            | laptop   | 20000000 | t         | 2025-12-08 16:54:11.775284
-  9 | HP Victus 15              | laptop   |  9000000 | t         | 2025-12-08 16:54:11.775284
-(9 rows)
+toko_laptop_db=# ALTER TABLE items
+toko_laptop_db-# ADD CONSTRAINT fk_category
+toko_laptop_db-# FOREIGN KEY (category_id)
+toko_laptop_db-# REFERENCES categories(id)
+toko_laptop_db-# ON UPDATE CASCADE
+toko_laptop_db-# ON DELETE SET NULL;
+ALTER TABLE
 
+toko_laptop_db=# INSERT INTO categories (name) VALUES
+toko_laptop_db-# ('Laptop'),
+toko_laptop_db-# ('Aksesoris'),
+toko_laptop_db-# ('Komponen');
+INSERT 0 3
 
-- toko_laptop_db=# select * from laptop where category = 'Laptop';
- id |           name            | category |  price   | is_active |         created_at         
-----+---------------------------+----------+----------+-----------+----------------------------
-  1 | ASUS ROG Strix G15        | Laptop   | 19500000 | t         | 2025-12-08 14:34:27.099655
-  2 | Acer Nitro 5              | Laptop   |  8500000 | t         | 2025-12-08 14:34:27.099655
-  3 | Lenovo ThinkPad X1 Carbon | Laptop   | 23000000 | t         | 2025-12-08 14:34:27.099655
-  4 | HP Pavilion 14            | Laptop   |  6500000 | t         | 2025-12-08 14:34:27.099655
-  5 | Dell XPS 13               | Laptop   | 21000000 | t         | 2025-12-08 14:34:27.099655
-  6 | ASUS VivoBook 15          | Laptop   |  5500000 | t         | 2025-12-08 14:34:27.099655
-  7 | Lenovo Legion 5           | Laptop   | 18000000 | t         | 2025-12-08 14:34:27.099655
- 10 | HP Victus 15              | Laptop   |  9000000 | t         | 2025-12-08 14:34:27.099655
-  9 | MacBook Air M1            | Laptop   | 20000000 | t         | 2025-12-08 14:34:27.099655
-(9 rows)
+toko_laptop_db=# INSERT INTO items (name, price, category_id) VALUES
+toko_laptop_db-# ('Acer Nitro 5', 14500000, 1),
+toko_laptop_db-# ('Asus Vivobook 15', 10500000, 1),
+toko_laptop_db-# ('Lenovo Legion 7', 25500000, 1),
+toko_laptop_db-# ('Cooling Pad FrostWind', 250000, 2),
+toko_laptop_db-# ('RGB Laptop Stand Aurora', 350000, 2),
+toko_laptop_db-# ('Wireless Mouse SilentClick', 180000, 2),
+toko_laptop_db-# ('SSD NVMe 1TB ThunderFlash', 1200000, 3),
+toko_laptop_db-# ('RAM 16GB VelocityX', 800000, 3),
+toko_laptop_db-# ('Thermal Paste IceFusion', 120000, 3),
+toko_laptop_db-# ('Keyboard Mechanical BlueSwitch', 650000, 3);
+INSERT 0 10
 
-- toko_laptop_db=# select * from laptop where category = 'laptop';
- id |           name            | category |  price   | is_active |         created_at         
-----+---------------------------+----------+----------+-----------+----------------------------
-  1 | ASUS ROG Strix G15        | laptop   | 19500000 | t         | 2025-12-08 16:54:11.775284
-  2 | Acer Nitro 5              | laptop   |  8500000 | t         | 2025-12-08 16:54:11.775284
-  3 | Lenovo ThinkPad X1 Carbon | laptop   | 23000000 | t         | 2025-12-08 16:54:11.775284
-  4 | HP Pavilion 14            | laptop   |  6500000 | t         | 2025-12-08 16:54:11.775284
-  5 | Dell XPS 13               | laptop   | 21000000 | t         | 2025-12-08 16:54:11.775284
-  6 | ASUS VivoBook 15          | laptop   |  5500000 | t         | 2025-12-08 16:54:11.775284
-  7 | Lenovo Legion 5           | laptop   | 18000000 | t         | 2025-12-08 16:54:11.775284
-  8 | MacBook Air M1            | laptop   | 20000000 | t         | 2025-12-08 16:54:11.775284
-  9 | HP Victus 15              | laptop   |  9000000 | t         | 2025-12-08 16:54:11.775284
-(9 rows)
+toko_laptop_db=# SELECT 
+toko_laptop_db-#     items.id,
+toko_laptop_db-#     items.name AS item_name,
+toko_laptop_db-#     items.price,
+toko_laptop_db-#     categories.name AS category_name
+toko_laptop_db-# FROM items
+toko_laptop_db-# JOIN categories
+toko_laptop_db-# ON items.category_id = categories.id;
+ id |           item_name            |  price   | category_name 
+----+--------------------------------+----------+---------------
+  1 | Acer Nitro 5                   | 14500000 | Laptop
+  2 | Asus Vivobook 15               | 10500000 | Laptop
+  3 | Lenovo Legion 7                | 25500000 | Laptop
+  4 | Cooling Pad FrostWind          |   250000 | Aksesoris
+  5 | RGB Laptop Stand Aurora        |   350000 | Aksesoris
+  6 | Wireless Mouse SilentClick     |   180000 | Aksesoris
+  7 | SSD NVMe 1TB ThunderFlash      |  1200000 | Komponen
+  8 | RAM 16GB VelocityX             |   800000 | Komponen
+  9 | Thermal Paste IceFusion        |   120000 | Komponen
+ 10 | Keyboard Mechanical BlueSwitch |   650000 | Komponen
+(10 rows)
 
-- toko_laptop_db=# update laptop set price = 9999999 where id =9;
-UPDATE 1
-toko_laptop_db=# select * from lapto;
-ERROR:  relation "lapto" does not exist
-LINE 1: select * from lapto;
-                      ^
-toko_laptop_db=# select * from laptop;
- id |                name                 |  category  |  price   | is_active |         created_at         
-----+-------------------------------------+------------+----------+-----------+----------------------------
-  1 | ASUS ROG Strix G15                  | laptop     | 19500000 | t         | 2025-12-08 16:54:11.775284
-  2 | Acer Nitro 5                        | laptop     |  8500000 | t         | 2025-12-08 16:54:11.775284
-  3 | Lenovo ThinkPad X1 Carbon           | laptop     | 23000000 | t         | 2025-12-08 16:54:11.775284
-  4 | HP Pavilion 14                      | laptop     |  6500000 | t         | 2025-12-08 16:54:11.775284
-  5 | Dell XPS 13                         | laptop     | 21000000 | t         | 2025-12-08 16:54:11.775284
-  6 | ASUS VivoBook 15                    | laptop     |  5500000 | t         | 2025-12-08 16:54:11.775284
-  7 | Lenovo Legion 5                     | laptop     | 18000000 | t         | 2025-12-08 16:54:11.775284
-  8 | MacBook Air M1                      | laptop     | 20000000 | t         | 2025-12-08 16:54:11.775284
- 10 | Logitech MX Master 3S Mouse         | accessoris |  1200000 | t         | 2025-12-08 16:54:11.775284
- 11 | Rexus Legionare Headset HX20        | accessoris |   450000 | t         | 2025-12-08 16:54:11.775284
- 12 | Keychron K2 Mechanical Keyboard     | accessoris |  1200000 | t         | 2025-12-08 16:54:11.775284
- 13 | Cooler Master Laptop Cooling Pad    | accessoris |   350000 | t         | 2025-12-08 16:54:11.775284
- 14 | WD My Passport External HDD 1TB     | accessoris |   900000 | t         | 2025-12-08 16:54:11.775284
- 15 | Sandisk Ultra 128GB Flashdisk 128GB | accessoris |   150000 | t         | 2025-12-08 16:54:11.775284
- 16 | Logitech C920 HD Webcam             | accessoris |  1100000 | t         | 2025-12-08 16:54:11.775284
- 17 | Anker USB-C Hub 7-in-1              | accessoris |   650000 | t         | 2025-12-08 16:54:11.775284
- 18 | TP-Link AC1300 WiFi Adapter         | accessoris |   300000 | t         | 2025-12-08 16:54:11.775284
- 19 | Ugreen Adjustable Laptop Stand      | accessoris |   250000 | t         | 2025-12-08 16:54:11.775284
-  9 | HP Victus 15                        | laptop     |  9999999 | t         | 2025-12-08 16:54:11.775284
-(19 rows)
+toko_laptop_db=# SELECT 
+toko_laptop_db-#     categories.name AS category,
+toko_laptop_db-#     COUNT(items.id) AS total_items
+toko_laptop_db-# FROM categories
+toko_laptop_db-# LEFT JOIN items
+toko_laptop_db-# ON items.category_id = categories.id
+toko_laptop_db-# GROUP BY categories.name;
+ category  | total_items 
+-----------+-------------
+ Komponen  |           4
+ Aksesoris |           3
+ Laptop    |           3
+(3 rows)
 
-- toko_laptop_db=# delete from laptop where id = 15;
-DELETE 1
-toko_laptop_db=# select * from laptop;
- id |               name               |  category  |  price   | is_active |         created_at         
-----+----------------------------------+------------+----------+-----------+----------------------------
-  1 | ASUS ROG Strix G15               | laptop     | 19500000 | t         | 2025-12-08 16:54:11.775284
-  2 | Acer Nitro 5                     | laptop     |  8500000 | t         | 2025-12-08 16:54:11.775284
-  3 | Lenovo ThinkPad X1 Carbon        | laptop     | 23000000 | t         | 2025-12-08 16:54:11.775284
-  4 | HP Pavilion 14                   | laptop     |  6500000 | t         | 2025-12-08 16:54:11.775284
-  5 | Dell XPS 13                      | laptop     | 21000000 | t         | 2025-12-08 16:54:11.775284
-  6 | ASUS VivoBook 15                 | laptop     |  5500000 | t         | 2025-12-08 16:54:11.775284
-  7 | Lenovo Legion 5                  | laptop     | 18000000 | t         | 2025-12-08 16:54:11.775284
-  8 | MacBook Air M1                   | laptop     | 20000000 | t         | 2025-12-08 16:54:11.775284
- 10 | Logitech MX Master 3S Mouse      | accessoris |  1200000 | t         | 2025-12-08 16:54:11.775284
- 11 | Rexus Legionare Headset HX20     | accessoris |   450000 | t         | 2025-12-08 16:54:11.775284
- 12 | Keychron K2 Mechanical Keyboard  | accessoris |  1200000 | t         | 2025-12-08 16:54:11.775284
- 13 | Cooler Master Laptop Cooling Pad | accessoris |   350000 | t         | 2025-12-08 16:54:11.775284
- 14 | WD My Passport External HDD 1TB  | accessoris |   900000 | t         | 2025-12-08 16:54:11.775284
- 16 | Logitech C920 HD Webcam          | accessoris |  1100000 | t         | 2025-12-08 16:54:11.775284
- 17 | Anker USB-C Hub 7-in-1           | accessoris |   650000 | t         | 2025-12-08 16:54:11.775284
- 18 | TP-Link AC1300 WiFi Adapter      | accessoris |   300000 | t         | 2025-12-08 16:54:11.775284
- 19 | Ugreen Adjustable Laptop Stand   | accessoris |   250000 | t         | 2025-12-08 16:54:11.775284
-  9 | HP Victus 15                     | laptop     |  9999999 | t         | 2025-12-08 16:54:11.775284
-(18 rows)
+toko_laptop_db=# SELECT 
+toko_laptop_db-#     categories.name AS category,
+toko_laptop_db-#     MAX(items.price) AS highest_price
+toko_laptop_db-# FROM categories
+toko_laptop_db-# JOIN items
+toko_laptop_db-# ON items.category_id = categories.id
+toko_laptop_db-# GROUP BY categories.name
+toko_laptop_db-# ORDER BY highest_price DESC
+toko_laptop_db-# LIMIT 1;
+ category | highest_price 
+----------+---------------
+ Laptop   |      25500000
+(1 row)
 
-# PG
-1.a 2.c 3.c 4.c 5.b 6.a 7.b 8.c 9.c 10.b
+1.b
+2.b
+3.c
+4.c
+5.a
+6.c
+7.c
+8.b
+9.c
+10.c
+
