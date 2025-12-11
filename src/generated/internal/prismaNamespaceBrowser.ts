@@ -17,8 +17,8 @@
 
 import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models.js'
-export type * from './prismaNamespace.js'
+export type * from '../models'
+export type * from './prismaNamespace'
 
 export const Decimal = runtime.Decimal
 
@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Character: 'Character',
-  CharacterStats: 'CharacterStats'
+  Element: 'Element',
+  Rarity: 'Rarity'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,35 +75,28 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const CharacterScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  rarity: 'rarity',
-  power: 'power',
-  effect: 'effect',
   description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  elementId: 'elementId',
+  rarityId: 'rarityId'
 } as const
 
 export type CharacterScalarFieldEnum = (typeof CharacterScalarFieldEnum)[keyof typeof CharacterScalarFieldEnum]
 
 
-export const CharacterStatsScalarFieldEnum = {
+export const ElementScalarFieldEnum = {
   id: 'id',
-  attack: 'attack',
-  critChance: 'critChance',
-  element: 'element',
-  magic: 'magic',
-  charm: 'charm',
-  speed: 'speed',
-  aggression: 'aggression',
-  agility: 'agility',
-  mana: 'mana',
-  magicDefense: 'magicDefense',
-  magicPower: 'magicPower',
-  poisonDamage: 'poisonDamage',
-  characterId: 'characterId'
+  name: 'name'
 } as const
 
-export type CharacterStatsScalarFieldEnum = (typeof CharacterStatsScalarFieldEnum)[keyof typeof CharacterStatsScalarFieldEnum]
+export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeof ElementScalarFieldEnum]
+
+
+export const RarityScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type RarityScalarFieldEnum = (typeof RarityScalarFieldEnum)[keyof typeof RarityScalarFieldEnum]
 
 
 export const SortOrder = {

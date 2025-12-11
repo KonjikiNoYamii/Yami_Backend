@@ -1,13 +1,10 @@
 import { Router } from "express";
+import { validate } from "../utils/validator";
 import {
-  create,
-  deletedChar,
-  getAll,
-  getById,
-  search,
-  update,
-} from "../contoller/character.controller";
-import { createCharacterValidation, getCharactersByIdValidation, validate } from "../middleware/character.validation";
+  createCharacterValidation,
+  getCharactersByIdValidation,
+} from "../middleware/character.validation";
+import { created, deletedChar, getAll, getById, search, updated } from "../contoller/character.controller";
 
 const router = Router();
 
@@ -17,10 +14,10 @@ router.get("/search", search);
 
 router.get("/:id", validate(getCharactersByIdValidation), getById);
 
-router.post("/", validate(createCharacterValidation), create);
+router.post("/", validate(createCharacterValidation), created);
 
-router.put("/:id", update);
+router.put("/:id", updated);
 
-router.delete("/:id",deletedChar);
+router.delete("/:id", deletedChar);
 
 export default router;

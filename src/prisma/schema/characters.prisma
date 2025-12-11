@@ -1,37 +1,11 @@
 model Character {
-  id          Int             @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
-  rarity      String
-  power       Int
-  effect      String?
-  description String
+  description String?
 
-  // Relasi ke Stats
-  stats       CharacterStats?
+  elementId   Int
+  rarityId    Int
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("characters")
-}
-
-model CharacterStats {
-  id            Int      @id @default(autoincrement())
-  attack        Int?
-  critChance    Int?
-  element       String?
-  magic         Int?
-  charm         Int?
-  speed         Int?
-  aggression    Int?
-  agility       Int?
-  mana          Int?
-  magicDefense  Int?
-  magicPower    Int?
-  poisonDamage  Int?
-
-  characterId   Int      @unique
-  character     Character @relation(fields: [characterId], references: [id])
-
-  @@map("character_stats")
+  element     Element  @relation(fields: [elementId], references: [id])
+  rarity      Rarity   @relation(fields: [rarityId], references: [id])
 }

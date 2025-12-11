@@ -1,26 +1,5 @@
-import type { NextFunction,Response,Request } from "express";
-import { body, param, validationResult, type ValidationChain } from "express-validator";
-import { errorResponse } from "../utils/response";
+import { body, param } from "express-validator";
 
-export const validate = (validations: ValidationChain[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    await Promise.all(validations.map((validation) => validation.run(req)));
-
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-      return next();
-    }
-
-    const errorList = errors.array().map((err) => ({
-      field: err.type === "field" ? err.path : "unknown",
-      message: err.msg,
-    }));
-
-    return errorResponse(res, "Validasi gagal", 400, errorList);
-  };
-};
-
-// Validasi untuk CREATE & UPDATE produk
 export const createCharacterValidation = [
   body("name")
     .trim()
@@ -29,13 +8,49 @@ export const createCharacterValidation = [
     .isLength({ min: 3 })
     .withMessage("Nama Character minimal 3 karakter"),
 
-  body("description").trim().notEmpty().withMessage("Deskripsi wajib diisi"),
+  body("description")
+    .optional()
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Deskripsi minimal 3 karakter"),
 
-  body("power")
-    .isNumeric()
-    .withMessage("power harus angka")
-    .custom((value) => value > 0)
-    .withMessage("power harus lebih dari 0"),
+  body("elementId")
+    .notEmpty()
+    .withMessage("Element ID wajib diisi")
+    .isInt({ gt: 0 })
+    .withMessage("Element ID harus berupa angka dan lebih dari 0"),
+
+  body("rarityId")
+    .notEmpty()
+    .withMessage("Rarity ID wajib diisi")
+    .isInt({ gt: 0 })
+    .withMessage("Rarity ID harus berupa angka dan lebih dari 0"),
+];
+
+export const updateCharacterValidation = [
+  param("id").isInt({ gt: 0 }).withMessage("ID harus angka valid"),
+
+  body("name")
+    .optional()
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Nama Character minimal 3 karakter"),
+
+  body("description")
+    .optional()
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Deskripsi minimal 3 karakter"),
+
+  body("elementId")
+    .optional()
+    .isInt({ gt: 0 })
+    .withMessage("Element ID harus angka valid"),
+
+  body("rarityId")
+    .optional()
+    .isInt({ gt: 0 })
+    .withMessage("Rarity ID harus angka valid"),
 ];
 
 // Validasi untuk GET by ID produk

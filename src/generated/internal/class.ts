@@ -12,7 +12,7 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "./prismaNamespace.js"
+import type * as Prisma from "./prismaNamespace"
 
 
 const config: runtime.GetPrismaClientConfig = {
@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.1.0",
   "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "postgresql",
-  "inlineSchema": "model Character {\n  id          Int     @id @default(autoincrement())\n  name        String\n  rarity      String\n  power       Int\n  effect      String?\n  description String\n\n  // Relasi ke Stats\n  stats CharacterStats?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map(\"characters\")\n}\n\nmodel CharacterStats {\n  id           Int     @id @default(autoincrement())\n  attack       Int?\n  critChance   Int?\n  element      String?\n  magic        Int?\n  charm        Int?\n  speed        Int?\n  aggression   Int?\n  agility      Int?\n  mana         Int?\n  magicDefense Int?\n  magicPower   Int?\n  poisonDamage Int?\n\n  characterId Int       @unique\n  character   Character @relation(fields: [characterId], references: [id])\n\n  @@map(\"character_stats\")\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n",
+  "inlineSchema": "model Character {\n  id          Int     @id @default(autoincrement())\n  name        String\n  description String?\n\n  elementId Int\n  rarityId  Int\n\n  element Element @relation(fields: [elementId], references: [id])\n  rarity  Rarity  @relation(fields: [rarityId], references: [id])\n}\n\nmodel Element {\n  id         Int         @id @default(autoincrement())\n  name       String\n  characters Character[]\n}\n\nmodel Rarity {\n  id         Int         @id @default(autoincrement())\n  name       String\n  characters Character[]\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Character\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rarity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"power\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"effect\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stats\",\"kind\":\"object\",\"type\":\"CharacterStats\",\"relationName\":\"CharacterToCharacterStats\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"characters\"},\"CharacterStats\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"attack\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"critChance\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"element\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"magic\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"charm\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"speed\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"aggression\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"agility\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"mana\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"magicDefense\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"magicPower\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"poisonDamage\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"characterId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"character\",\"kind\":\"object\",\"type\":\"Character\",\"relationName\":\"CharacterToCharacterStats\"}],\"dbName\":\"character_stats\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Character\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"elementId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"rarityId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"element\",\"kind\":\"object\",\"type\":\"Element\",\"relationName\":\"CharacterToElement\"},{\"name\":\"rarity\",\"kind\":\"object\",\"type\":\"Rarity\",\"relationName\":\"CharacterToRarity\"}],\"dbName\":null},\"Element\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"characters\",\"kind\":\"object\",\"type\":\"Character\",\"relationName\":\"CharacterToElement\"}],\"dbName\":null},\"Rarity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"characters\",\"kind\":\"object\",\"type\":\"Character\",\"relationName\":\"CharacterToRarity\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -185,14 +185,24 @@ export interface PrismaClient<
   get character(): Prisma.CharacterDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.characterStats`: Exposes CRUD operations for the **CharacterStats** model.
+   * `prisma.element`: Exposes CRUD operations for the **Element** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more CharacterStats
-    * const characterStats = await prisma.characterStats.findMany()
+    * // Fetch zero or more Elements
+    * const elements = await prisma.element.findMany()
     * ```
     */
-  get characterStats(): Prisma.CharacterStatsDelegate<ExtArgs, { omit: OmitOpts }>;
+  get element(): Prisma.ElementDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.rarity`: Exposes CRUD operations for the **Rarity** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Rarities
+    * const rarities = await prisma.rarity.findMany()
+    * ```
+    */
+  get rarity(): Prisma.RarityDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {
