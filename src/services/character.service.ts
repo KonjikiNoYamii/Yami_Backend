@@ -1,19 +1,24 @@
-import {
-  characters,
-  type Character,
-  type CharacterStats,
-} from "../models/character.model";
+import { type Character, type CharacterStats } from "../generated/client";
+import { getPrisma } from "../prisma";
 
-export const getAllCharacters = () => {
-  return {
+const prisma = getPrisma();
+
+export const getAllCharacters = async (): Promise<{characters:Character[], total:number}> => {
+  const characters = await prisma.character.findMany();
+  const total = characters.length
+
+  return{
     characters,
-    total: characters.length,
-  };
-};
+    total
+  }
+}
 
-export const getCharacterById = (id: string) => {
+
+export const getCharacterById = async (id: string): Promise<Character> => {
   const numid = parseInt(id);
-  const character = characters.find((c) => c.id === numid);
+  const character = await prisma.character.findUnique({
+    where: { id: numid },
+  });
 
   if (!character) {
     throw new Error("Character tidak ditemukan");
@@ -22,96 +27,151 @@ export const getCharacterById = (id: string) => {
   return character;
 };
 
-export const searchCharacter = (
+export const searchCharacter = async (
   nama?: string,
   kelangkaan?: string,
   min_power?: string,
   max_power?: string
-) => {
-  let result = characters;
+): Promise<Character[]> => {
 
-  if (nama) {
-    result = result.filter((c) =>
-      c.name.toLowerCase().includes((nama as string).toLowerCase())
-    );
-  }
+  return await prisma.character.findMany({
+    where: {
+      ...(nama && {
+        name: { contains: nama, mode: "insensitive" }
+      }),
 
-  if (kelangkaan) {
-    result = result.filter((c) =>
-      c.rarity.toLowerCase().includes((kelangkaan as string).toLowerCase())
-    );
-  }
+      ...(kelangkaan && {
+        rarity: { contains: kelangkaan, mode: "insensitive" }
+      }),
 
-  if (min_power) {
-    result = result.filter((c) => c.power >= Number(min_power));
-  }
-
-  if (max_power) {
-    result = result.filter((c) => c.power <= Number(max_power));
-  }
-  return result;
+      ...((min_power || max_power) && {
+        power: {
+          ...(min_power && { gte: Number(min_power) }),
+          ...(max_power && { lte: Number(max_power) }),
+        }
+      })
+    }
+  });
 };
 
-export const createCharacter = (
-  name: string,
-  rarity: string,
-  power: number,
-  effect: string,
-  description: string,
-  stats: Partial<CharacterStats> = {}
-) => {
-  const newCharacter: Character = {
-    id: characters.length + 1,
-    name,
-    rarity,
-    power,
-    effect,
-    description,
-    stats: {
-      attack: stats.attack ?? 0,
-      critChance: stats.critChance ?? 0,
-      element: stats.element ?? "",
-      magic: stats.magic ?? 0,
-      charm: stats.charm ?? 0,
-      speed: stats.speed ?? 0,
-      aggression: stats.aggression ?? 0,
-      agility: stats.agility ?? 0,
-      mana: stats.mana ?? 0,
-      magicDefense: stats.magicDefense ?? 0,
-      magicPower: stats.magicPower ?? 0,
-      poisonDamage: stats.poisonDamage ?? 0,
+  // let result = characters;
+
+  // if (nama) {
+  //   result = result.filter((c) =>
+  //     c.name.toLowerCase().includes((nama as string).toLowerCase())
+  //   );
+  // }
+
+  // if (kelangkaan) {
+  //   result = result.filter((c) =>
+  //     c.rarity.toLowerCase().includes((kelangkaan as string).toLowerCase())
+  //   );
+  // }
+
+  // if (min_power) {
+  //   result = result.filter((c) => c.power >= Number(min_power));
+  // }
+
+  // if (max_power) {
+  //   result = result.filter((c) => c.power <= Number(max_power));
+  // }
+  // return result;
+
+export const createCharacter = async (data: {
+  name: string;
+  rarity: string;
+  power: number;
+  effect: string;
+  description: string;
+  stats: Partial<CharacterStats>;
+}): Promise<Character> => {
+  return await prisma.character.create({
+    data: {
+      name: data.name,
+      rarity: data.rarity,
+      power: data.power,
+      effect: data.effect,
+      description: data.description,
+
+      // ⬇⬇⬇ BAGIAN YANG SEHARUSNYA
+      stats: {
+        create: {
+          attack: data.stats.attack ?? 0,
+          critChance: data.stats.critChance ?? 0,
+          element: data.stats.element ?? "",
+          magic: data.stats.magic ?? 0,
+          charm: data.stats.charm ?? 0,
+          speed: data.stats.speed ?? 0,
+          aggression: data.stats.aggression ?? 0,
+          agility: data.stats.agility ?? 0,
+          mana: data.stats.mana ?? 0,
+          magicDefense: data.stats.magicDefense ?? 0,
+          magicPower: data.stats.magicPower ?? 0,
+          poisonDamage: data.stats.poisonDamage ?? 0,
+        },
+      },
     },
-  };
-
-  characters.push(newCharacter);
-  return newCharacter;
+    include: {
+      stats: true,
+    },
+  });
 };
 
-export const updateCharacter = (id: string, data: any) => {
-  const numid = parseInt(id);
-  const index = characters.findIndex((c) => c.id === numid);
 
-  if (index === -1) {
-    throw new Error("Character tidak ditemukan");
-  }
-  characters[index] = {
-    ...characters[index],
-    ...data,
-    stats: { ...characters[index]?.stats, ...data.stats },
-  };
-
-  return characters[index];
+type CharacterUpdateInput = {
+  name?: string;
+  rarity?: string;
+  power?: number;
+  effect?: string;
+  description?: string;
+  stats?: Partial<CharacterStats>;
 };
 
-export const deletedCharacter = (id: string) => {
+export const updateCharacter = async (
+  id: string,
+  data: CharacterUpdateInput
+): Promise<Character> => {
   const numid = parseInt(id);
-  const index = characters.findIndex((c) => c.id === numid);
+  await getCharacterById(id);
 
-  if (index === -1) {
-    throw new Error("Character tidak ditemukan");
+  const characterData: any = {};
+
+  if (data.name !== undefined) characterData.name = data.name;
+  if (data.rarity !== undefined) characterData.rarity = data.rarity;
+  if (data.power !== undefined) characterData.power = data.power;
+  if (data.effect !== undefined) characterData.effect = data.effect;
+  if (data.description !== undefined) characterData.description = data.description;
+
+  if (data.stats) {
+    const statsUpdate: any = {};
+
+    for (const key in data.stats) {
+      const value = (data.stats as any)[key];
+      if (value !== undefined) {
+        statsUpdate[key] = value;
+      }
+    }
+
+    characterData.stats = {
+      upsert: {
+        update: statsUpdate,
+        create: statsUpdate,
+      },
+    };
   }
 
-  const deleted = characters.splice(index, 1);
+  return await prisma.character.update({
+    where: { id: numid },
+    data: characterData,
+    include: { stats: true },
+  });
+};
 
-  return deleted;
+
+export const deletedCharacter = async (id: string):Promise<Character> => {
+  const numid = parseInt(id);
+
+  return await prisma.character.delete({
+    where: {id:numid},
+  })
 };

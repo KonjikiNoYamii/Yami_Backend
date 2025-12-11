@@ -8,7 +8,6 @@ import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from "./middleware/error.handler";
 import characterRouter from './routes/character.route'
-import categoriesRouter from './routes/categories.route'
 import { successResponse } from "./utils/response";
 import { requestLogger } from "./middleware/logger.middleware";
 import { apiKeyValidator } from "./middleware/apiKey.middleware";
@@ -40,8 +39,6 @@ app.get("/api/error-test", () => {
 });
 
 app.use('/api/characters', characterRouter)
-
-app.use('/api/categories', categoriesRouter)
 
 app.use(/.*/, (req: Request, _res: Response) => {
   throw new Error(`Route ${req.originalUrl} tidak ada di API`);

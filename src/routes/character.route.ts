@@ -1,13 +1,13 @@
 import { Router } from "express";
 import {
   create,
+  deletedChar,
   getAll,
   getById,
   search,
   update,
 } from "../contoller/character.controller";
 import { createCharacterValidation, getCharactersByIdValidation, validate } from "../middleware/character.validation";
-import { deleted } from "../contoller/categories.controller";
 
 const router = Router();
 
@@ -21,6 +21,6 @@ router.post("/", validate(createCharacterValidation), create);
 
 router.put("/:id", update);
 
-router.delete("/:id",deleted);
+router.delete("/:id",deletedChar);
 
 export default router;

@@ -2,8 +2,8 @@ import type { Request, Response } from "express";
 import { successResponse } from "../utils/response";
 import { createCharacter, deletedCharacter, getAllCharacters, getCharacterById, searchCharacter, updateCharacter } from "../services/character.service";
 
-export const getAll =  (_req: Request, res: Response) => {
-  const { characters, total } = getAllCharacters()
+export const getAll = async(_req: Request, res: Response) => {
+  const { characters, total } = await getAllCharacters()
 
   successResponse(
     res,
@@ -15,10 +15,10 @@ export const getAll =  (_req: Request, res: Response) => {
   )
 }
 
-export const search = (req: Request, res: Response) => {
+export const search = async (req: Request, res: Response) => {
   const { nama, kelangkaan, min_power, max_power } = req.query;
 
-  const result = searchCharacter( nama?.toString(), kelangkaan?.toString(), min_power?.toString(), max_power?.toString() )
+  const result = await searchCharacter( nama?.toString(), kelangkaan?.toString(), min_power?.toString(), max_power?.toString() )
 
   res.json({
     succes: true,
@@ -26,35 +26,33 @@ export const search = (req: Request, res: Response) => {
   });
 }
 
-export const getById = (req: Request, res: Response) => {
+export const getById = async (req: Request, res: Response) => {
     if (!req.params.id) {
       throw new Error("Parameter tidak ditemukan!")
     }
-    const character = getCharacterById(req.params.id)
+    const character = await getCharacterById(req.params.id)
     
     successResponse(res, "Character berhasil diambil", character, null,200);
   }
 
-export const create = (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
   const { name, rarity, power, effect, description, stats } = req.body;
+  const data = {
+    name:name.toString(), rarity: rarity.toString(),power:Number(power), effect:effect.toString(), description:description.toString(), stats:stats
+  }
 
-  const newCharacter = createCharacter(
-    name,
-    rarity,
-    Number(power),
-    effect,
-    description,
-    stats
+  const newCharacter = await createCharacter(
+    data
   );
 
   successResponse(res, "Character ditambahkan!", newCharacter, null, 201);
 } 
 
-  export const update = (req: Request, res: Response) => {
+  export const update = async (req: Request, res: Response) => {
   if (!req.params.id) {
     throw new Error("Parameter tidak ditemukan!")
   }
-  const character= updateCharacter(req.params.id, req.body)
+  const character= await updateCharacter(req.params.id, req.body)
 
 
 
@@ -67,16 +65,16 @@ export const create = (req: Request, res: Response) => {
   )
 }
 
-export const deleted = (req: Request, res: Response) => {
+export const deletedChar = async (req: Request, res: Response) => {
   if (!req.params.id) {
     throw new Error("Tidak ditemukan!")
   }
 
-   const deleted = deletedCharacter(req.params.id)
+   const deleted = await deletedCharacter(req.params.id)
   successResponse(
     res,
     "Character berhasil dihapus!",
-    deleted[0],
+    deleted,
     null,
     200
   )
