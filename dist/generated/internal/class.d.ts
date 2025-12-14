@@ -1,5 +1,5 @@
 import * as runtime from "@prisma/client/runtime/client";
-import type * as Prisma from "./prismaNamespace.js";
+import type * as Prisma from "./prismaNamespace";
 export type LogOptions<ClientOptions extends Prisma.PrismaClientOptions> = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never;
 export interface PrismaClientConstructor {
     /**
@@ -123,14 +123,25 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
         omit: OmitOpts;
     }>;
     /**
-     * `prisma.characterStats`: Exposes CRUD operations for the **CharacterStats** model.
+     * `prisma.element`: Exposes CRUD operations for the **Element** model.
       * Example usage:
       * ```ts
-      * // Fetch zero or more CharacterStats
-      * const characterStats = await prisma.characterStats.findMany()
+      * // Fetch zero or more Elements
+      * const elements = await prisma.element.findMany()
       * ```
       */
-    get characterStats(): Prisma.CharacterStatsDelegate<ExtArgs, {
+    get element(): Prisma.ElementDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.rarity`: Exposes CRUD operations for the **Rarity** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more Rarities
+      * const rarities = await prisma.rarity.findMany()
+      * ```
+      */
+    get rarity(): Prisma.RarityDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
 }

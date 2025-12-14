@@ -8,4 +8,5 @@ model Character {
 
   element     Element  @relation(fields: [elementId], references: [id])
   rarity      Rarity   @relation(fields: [rarityId], references: [id])
+  deletedAt DateTime?
 }

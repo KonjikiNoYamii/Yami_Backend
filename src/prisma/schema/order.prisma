@@ -1,0 +1,11 @@
+model Order {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+
+  orderItems  OrderItem[]
+
+  deletedAt   DateTime?
+}

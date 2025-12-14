@@ -1,0 +1,14 @@
+model Product {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?       // Tambahan deskripsi product
+  price       Decimal       @db.Decimal(10, 2)
+  stock       Int           @default(0)     // Tambahan stock
+
+  categoryId  Int
+  category    Category      @relation(fields: [categoryId], references: [id])
+
+  orderItems  OrderItem[]
+
+  deletedAt   DateTime?
+}

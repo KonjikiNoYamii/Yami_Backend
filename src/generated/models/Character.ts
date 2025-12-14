@@ -44,6 +44,7 @@ export type CharacterMinAggregateOutputType = {
   description: string | null
   elementId: number | null
   rarityId: number | null
+  deletedAt: Date | null
 }
 
 export type CharacterMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type CharacterMaxAggregateOutputType = {
   description: string | null
   elementId: number | null
   rarityId: number | null
+  deletedAt: Date | null
 }
 
 export type CharacterCountAggregateOutputType = {
@@ -60,6 +62,7 @@ export type CharacterCountAggregateOutputType = {
   description: number
   elementId: number
   rarityId: number
+  deletedAt: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type CharacterMinAggregateInputType = {
   description?: true
   elementId?: true
   rarityId?: true
+  deletedAt?: true
 }
 
 export type CharacterMaxAggregateInputType = {
@@ -90,6 +94,7 @@ export type CharacterMaxAggregateInputType = {
   description?: true
   elementId?: true
   rarityId?: true
+  deletedAt?: true
 }
 
 export type CharacterCountAggregateInputType = {
@@ -98,6 +103,7 @@ export type CharacterCountAggregateInputType = {
   description?: true
   elementId?: true
   rarityId?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -193,6 +199,7 @@ export type CharacterGroupByOutputType = {
   description: string | null
   elementId: number
   rarityId: number
+  deletedAt: Date | null
   _count: CharacterCountAggregateOutputType | null
   _avg: CharacterAvgAggregateOutputType | null
   _sum: CharacterSumAggregateOutputType | null
@@ -224,6 +231,7 @@ export type CharacterWhereInput = {
   description?: Prisma.StringNullableFilter<"Character"> | string | null
   elementId?: Prisma.IntFilter<"Character"> | number
   rarityId?: Prisma.IntFilter<"Character"> | number
+  deletedAt?: Prisma.DateTimeNullableFilter<"Character"> | Date | string | null
   element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>
   rarity?: Prisma.XOR<Prisma.RarityScalarRelationFilter, Prisma.RarityWhereInput>
 }
@@ -234,6 +242,7 @@ export type CharacterOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   elementId?: Prisma.SortOrder
   rarityId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   element?: Prisma.ElementOrderByWithRelationInput
   rarity?: Prisma.RarityOrderByWithRelationInput
 }
@@ -247,6 +256,7 @@ export type CharacterWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Character"> | string | null
   elementId?: Prisma.IntFilter<"Character"> | number
   rarityId?: Prisma.IntFilter<"Character"> | number
+  deletedAt?: Prisma.DateTimeNullableFilter<"Character"> | Date | string | null
   element?: Prisma.XOR<Prisma.ElementScalarRelationFilter, Prisma.ElementWhereInput>
   rarity?: Prisma.XOR<Prisma.RarityScalarRelationFilter, Prisma.RarityWhereInput>
 }, "id">
@@ -257,6 +267,7 @@ export type CharacterOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   elementId?: Prisma.SortOrder
   rarityId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CharacterCountOrderByAggregateInput
   _avg?: Prisma.CharacterAvgOrderByAggregateInput
   _max?: Prisma.CharacterMaxOrderByAggregateInput
@@ -273,11 +284,13 @@ export type CharacterScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Character"> | string | null
   elementId?: Prisma.IntWithAggregatesFilter<"Character"> | number
   rarityId?: Prisma.IntWithAggregatesFilter<"Character"> | number
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Character"> | Date | string | null
 }
 
 export type CharacterCreateInput = {
   name: string
   description?: string | null
+  deletedAt?: Date | string | null
   element: Prisma.ElementCreateNestedOneWithoutCharactersInput
   rarity: Prisma.RarityCreateNestedOneWithoutCharactersInput
 }
@@ -288,11 +301,13 @@ export type CharacterUncheckedCreateInput = {
   description?: string | null
   elementId: number
   rarityId: number
+  deletedAt?: Date | string | null
 }
 
 export type CharacterUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   element?: Prisma.ElementUpdateOneRequiredWithoutCharactersNestedInput
   rarity?: Prisma.RarityUpdateOneRequiredWithoutCharactersNestedInput
 }
@@ -303,6 +318,7 @@ export type CharacterUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   elementId?: Prisma.IntFieldUpdateOperationsInput | number
   rarityId?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CharacterCreateManyInput = {
@@ -311,11 +327,13 @@ export type CharacterCreateManyInput = {
   description?: string | null
   elementId: number
   rarityId: number
+  deletedAt?: Date | string | null
 }
 
 export type CharacterUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CharacterUncheckedUpdateManyInput = {
@@ -324,6 +342,7 @@ export type CharacterUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   elementId?: Prisma.IntFieldUpdateOperationsInput | number
   rarityId?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CharacterCountOrderByAggregateInput = {
@@ -332,6 +351,7 @@ export type CharacterCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   rarityId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type CharacterAvgOrderByAggregateInput = {
@@ -346,6 +366,7 @@ export type CharacterMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   rarityId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type CharacterMinOrderByAggregateInput = {
@@ -354,6 +375,7 @@ export type CharacterMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   elementId?: Prisma.SortOrder
   rarityId?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type CharacterSumOrderByAggregateInput = {
@@ -372,20 +394,8 @@ export type CharacterOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type CharacterCreateNestedManyWithoutElementInput = {
@@ -475,6 +485,7 @@ export type CharacterUncheckedUpdateManyWithoutRarityNestedInput = {
 export type CharacterCreateWithoutElementInput = {
   name: string
   description?: string | null
+  deletedAt?: Date | string | null
   rarity: Prisma.RarityCreateNestedOneWithoutCharactersInput
 }
 
@@ -483,6 +494,7 @@ export type CharacterUncheckedCreateWithoutElementInput = {
   name: string
   description?: string | null
   rarityId: number
+  deletedAt?: Date | string | null
 }
 
 export type CharacterCreateOrConnectWithoutElementInput = {
@@ -520,11 +532,13 @@ export type CharacterScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Character"> | string | null
   elementId?: Prisma.IntFilter<"Character"> | number
   rarityId?: Prisma.IntFilter<"Character"> | number
+  deletedAt?: Prisma.DateTimeNullableFilter<"Character"> | Date | string | null
 }
 
 export type CharacterCreateWithoutRarityInput = {
   name: string
   description?: string | null
+  deletedAt?: Date | string | null
   element: Prisma.ElementCreateNestedOneWithoutCharactersInput
 }
 
@@ -533,6 +547,7 @@ export type CharacterUncheckedCreateWithoutRarityInput = {
   name: string
   description?: string | null
   elementId: number
+  deletedAt?: Date | string | null
 }
 
 export type CharacterCreateOrConnectWithoutRarityInput = {
@@ -566,11 +581,13 @@ export type CharacterCreateManyElementInput = {
   name: string
   description?: string | null
   rarityId: number
+  deletedAt?: Date | string | null
 }
 
 export type CharacterUpdateWithoutElementInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rarity?: Prisma.RarityUpdateOneRequiredWithoutCharactersNestedInput
 }
 
@@ -579,6 +596,7 @@ export type CharacterUncheckedUpdateWithoutElementInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rarityId?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CharacterUncheckedUpdateManyWithoutElementInput = {
@@ -586,6 +604,7 @@ export type CharacterUncheckedUpdateManyWithoutElementInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rarityId?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CharacterCreateManyRarityInput = {
@@ -593,11 +612,13 @@ export type CharacterCreateManyRarityInput = {
   name: string
   description?: string | null
   elementId: number
+  deletedAt?: Date | string | null
 }
 
 export type CharacterUpdateWithoutRarityInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   element?: Prisma.ElementUpdateOneRequiredWithoutCharactersNestedInput
 }
 
@@ -606,6 +627,7 @@ export type CharacterUncheckedUpdateWithoutRarityInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   elementId?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CharacterUncheckedUpdateManyWithoutRarityInput = {
@@ -613,6 +635,7 @@ export type CharacterUncheckedUpdateManyWithoutRarityInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   elementId?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -623,6 +646,7 @@ export type CharacterSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   description?: boolean
   elementId?: boolean
   rarityId?: boolean
+  deletedAt?: boolean
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
   rarity?: boolean | Prisma.RarityDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["character"]>
@@ -633,6 +657,7 @@ export type CharacterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   description?: boolean
   elementId?: boolean
   rarityId?: boolean
+  deletedAt?: boolean
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
   rarity?: boolean | Prisma.RarityDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["character"]>
@@ -643,6 +668,7 @@ export type CharacterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   description?: boolean
   elementId?: boolean
   rarityId?: boolean
+  deletedAt?: boolean
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
   rarity?: boolean | Prisma.RarityDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["character"]>
@@ -653,9 +679,10 @@ export type CharacterSelectScalar = {
   description?: boolean
   elementId?: boolean
   rarityId?: boolean
+  deletedAt?: boolean
 }
 
-export type CharacterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "elementId" | "rarityId", ExtArgs["result"]["character"]>
+export type CharacterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "elementId" | "rarityId" | "deletedAt", ExtArgs["result"]["character"]>
 export type CharacterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   element?: boolean | Prisma.ElementDefaultArgs<ExtArgs>
   rarity?: boolean | Prisma.RarityDefaultArgs<ExtArgs>
@@ -681,6 +708,7 @@ export type $CharacterPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     description: string | null
     elementId: number
     rarityId: number
+    deletedAt: Date | null
   }, ExtArgs["result"]["character"]>
   composites: {}
 }
@@ -1111,6 +1139,7 @@ export interface CharacterFieldRefs {
   readonly description: Prisma.FieldRef<"Character", 'String'>
   readonly elementId: Prisma.FieldRef<"Character", 'Int'>
   readonly rarityId: Prisma.FieldRef<"Character", 'Int'>
+  readonly deletedAt: Prisma.FieldRef<"Character", 'DateTime'>
 }
     
 

@@ -14,7 +14,7 @@
  * model files in the `model` directory!
  */
 import * as runtime from "@prisma/client/runtime/client";
-import {} from "./class.js";
+import {} from "./class";
 /**
  * Prisma Errors
  */
@@ -69,7 +69,8 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 export const ModelName = {
     Character: 'Character',
-    CharacterStats: 'CharacterStats'
+    Element: 'Element',
+    Rarity: 'Rarity'
 };
 /**
  * Enums
@@ -83,28 +84,18 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export const CharacterScalarFieldEnum = {
     id: 'id',
     name: 'name',
-    rarity: 'rarity',
-    power: 'power',
-    effect: 'effect',
     description: 'description',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    elementId: 'elementId',
+    rarityId: 'rarityId',
+    deletedAt: 'deletedAt'
 };
-export const CharacterStatsScalarFieldEnum = {
+export const ElementScalarFieldEnum = {
     id: 'id',
-    attack: 'attack',
-    critChance: 'critChance',
-    element: 'element',
-    magic: 'magic',
-    charm: 'charm',
-    speed: 'speed',
-    aggression: 'aggression',
-    agility: 'agility',
-    mana: 'mana',
-    magicDefense: 'magicDefense',
-    magicPower: 'magicPower',
-    poisonDamage: 'poisonDamage',
-    characterId: 'characterId'
+    name: 'name'
+};
+export const RarityScalarFieldEnum = {
+    id: 'id',
+    name: 'name'
 };
 export const SortOrder = {
     asc: 'asc',

@@ -1,6 +1,6 @@
 import * as runtime from "@prisma/client/runtime/index-browser";
-export type * from '../models.js';
-export type * from './prismaNamespace.js';
+export type * from '../models';
+export type * from './prismaNamespace';
 export declare const Decimal: typeof runtime.Decimal;
 export declare const NullTypes: {
     DbNull: (new (secret: never) => typeof runtime.DbNull);
@@ -27,7 +27,8 @@ export declare const JsonNull: import("@prisma/client-runtime-utils").JsonNullCl
 export declare const AnyNull: import("@prisma/client-runtime-utils").AnyNullClass;
 export declare const ModelName: {
     readonly Character: "Character";
-    readonly CharacterStats: "CharacterStats";
+    readonly Element: "Element";
+    readonly Rarity: "Rarity";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -40,31 +41,22 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export declare const CharacterScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
-    readonly rarity: "rarity";
-    readonly power: "power";
-    readonly effect: "effect";
     readonly description: "description";
-    readonly createdAt: "createdAt";
-    readonly updatedAt: "updatedAt";
+    readonly elementId: "elementId";
+    readonly rarityId: "rarityId";
+    readonly deletedAt: "deletedAt";
 };
 export type CharacterScalarFieldEnum = (typeof CharacterScalarFieldEnum)[keyof typeof CharacterScalarFieldEnum];
-export declare const CharacterStatsScalarFieldEnum: {
+export declare const ElementScalarFieldEnum: {
     readonly id: "id";
-    readonly attack: "attack";
-    readonly critChance: "critChance";
-    readonly element: "element";
-    readonly magic: "magic";
-    readonly charm: "charm";
-    readonly speed: "speed";
-    readonly aggression: "aggression";
-    readonly agility: "agility";
-    readonly mana: "mana";
-    readonly magicDefense: "magicDefense";
-    readonly magicPower: "magicPower";
-    readonly poisonDamage: "poisonDamage";
-    readonly characterId: "characterId";
+    readonly name: "name";
 };
-export type CharacterStatsScalarFieldEnum = (typeof CharacterStatsScalarFieldEnum)[keyof typeof CharacterStatsScalarFieldEnum];
+export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeof ElementScalarFieldEnum];
+export declare const RarityScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+};
+export type RarityScalarFieldEnum = (typeof RarityScalarFieldEnum)[keyof typeof RarityScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

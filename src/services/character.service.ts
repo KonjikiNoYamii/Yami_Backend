@@ -9,6 +9,9 @@ export const getAllCharacters = async (): Promise<{ chars: Character[]; total: n
       rarity: true,
       element: true,
     },
+    where:{
+      deletedAt:null
+    }
   });
 
   return { chars, total: chars.length };
@@ -16,7 +19,7 @@ export const getAllCharacters = async (): Promise<{ chars: Character[]; total: n
 
 export const getCharacterById = async (id: number) => {
   return prisma.character.findUnique({
-    where: { id },
+    where: { id, deletedAt:null },
     include: {
       rarity: true,
       element: true,
@@ -27,6 +30,7 @@ export const getCharacterById = async (id: number) => {
 export const searchCharacters = async (keyword: string) => {
   return prisma.character.findMany({
     where: {
+      deletedAt:null,
       name: {
         contains: keyword,
         mode: "insensitive",
@@ -45,13 +49,22 @@ export const createCharacter = async (data: any) => {
 
 export const updateCharacter = async (id: number, data: any) => {
   return prisma.character.update({
-    where: { id },
+    where: { id,
+      deletedAt:null
+     },
     data,
   });
 };
 
-export const deleteCharacter = async (id: number) => {
-  return prisma.character.delete({
-    where: { id },
-  });
+export const deleteCharacter = async (id: string):Promise<Character> => {
+  const numId = parseInt(id)
+  return await prisma.character.update({
+    where:{
+      id:numId,
+      deletedAt:null
+    },
+    data:{
+      deletedAt:new Date()
+    } 
+  })
 };

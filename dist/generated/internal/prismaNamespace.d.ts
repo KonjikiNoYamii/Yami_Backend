@@ -1,7 +1,7 @@
 import * as runtime from "@prisma/client/runtime/client";
-import type * as Prisma from "../models.js";
-import { type PrismaClient } from "./class.js";
-export type * from '../models.js';
+import type * as Prisma from "../models";
+import { type PrismaClient } from "./class";
+export type * from '../models';
 export type DMMF = typeof runtime.DMMF;
 export type PrismaPromise<T> = runtime.Types.Public.PrismaPromise<T>;
 /**
@@ -232,7 +232,8 @@ export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>;
 type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>;
 export declare const ModelName: {
     readonly Character: "Character";
-    readonly CharacterStats: "CharacterStats";
+    readonly Element: "Element";
+    readonly Rarity: "Rarity";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils.Fn<{
@@ -245,7 +246,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "character" | "characterStats";
+        modelProps: "character" | "element" | "rarity";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -323,77 +324,151 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
-        CharacterStats: {
-            payload: Prisma.$CharacterStatsPayload<ExtArgs>;
-            fields: Prisma.CharacterStatsFieldRefs;
+        Element: {
+            payload: Prisma.$ElementPayload<ExtArgs>;
+            fields: Prisma.ElementFieldRefs;
             operations: {
                 findUnique: {
-                    args: Prisma.CharacterStatsFindUniqueArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload> | null;
+                    args: Prisma.ElementFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload> | null;
                 };
                 findUniqueOrThrow: {
-                    args: Prisma.CharacterStatsFindUniqueOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>;
+                    args: Prisma.ElementFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>;
                 };
                 findFirst: {
-                    args: Prisma.CharacterStatsFindFirstArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload> | null;
+                    args: Prisma.ElementFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload> | null;
                 };
                 findFirstOrThrow: {
-                    args: Prisma.CharacterStatsFindFirstOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>;
+                    args: Prisma.ElementFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>;
                 };
                 findMany: {
-                    args: Prisma.CharacterStatsFindManyArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>[];
+                    args: Prisma.ElementFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>[];
                 };
                 create: {
-                    args: Prisma.CharacterStatsCreateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>;
+                    args: Prisma.ElementCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>;
                 };
                 createMany: {
-                    args: Prisma.CharacterStatsCreateManyArgs<ExtArgs>;
+                    args: Prisma.ElementCreateManyArgs<ExtArgs>;
                     result: BatchPayload;
                 };
                 createManyAndReturn: {
-                    args: Prisma.CharacterStatsCreateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>[];
+                    args: Prisma.ElementCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>[];
                 };
                 delete: {
-                    args: Prisma.CharacterStatsDeleteArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>;
+                    args: Prisma.ElementDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>;
                 };
                 update: {
-                    args: Prisma.CharacterStatsUpdateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>;
+                    args: Prisma.ElementUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>;
                 };
                 deleteMany: {
-                    args: Prisma.CharacterStatsDeleteManyArgs<ExtArgs>;
+                    args: Prisma.ElementDeleteManyArgs<ExtArgs>;
                     result: BatchPayload;
                 };
                 updateMany: {
-                    args: Prisma.CharacterStatsUpdateManyArgs<ExtArgs>;
+                    args: Prisma.ElementUpdateManyArgs<ExtArgs>;
                     result: BatchPayload;
                 };
                 updateManyAndReturn: {
-                    args: Prisma.CharacterStatsUpdateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>[];
+                    args: Prisma.ElementUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>[];
                 };
                 upsert: {
-                    args: Prisma.CharacterStatsUpsertArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CharacterStatsPayload>;
+                    args: Prisma.ElementUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ElementPayload>;
                 };
                 aggregate: {
-                    args: Prisma.CharacterStatsAggregateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.AggregateCharacterStats>;
+                    args: Prisma.ElementAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateElement>;
                 };
                 groupBy: {
-                    args: Prisma.CharacterStatsGroupByArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.CharacterStatsGroupByOutputType>[];
+                    args: Prisma.ElementGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.ElementGroupByOutputType>[];
                 };
                 count: {
-                    args: Prisma.CharacterStatsCountArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.CharacterStatsCountAggregateOutputType> | number;
+                    args: Prisma.ElementCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.ElementCountAggregateOutputType> | number;
+                };
+            };
+        };
+        Rarity: {
+            payload: Prisma.$RarityPayload<ExtArgs>;
+            fields: Prisma.RarityFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.RarityFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.RarityFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>;
+                };
+                findFirst: {
+                    args: Prisma.RarityFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.RarityFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>;
+                };
+                findMany: {
+                    args: Prisma.RarityFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>[];
+                };
+                create: {
+                    args: Prisma.RarityCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>;
+                };
+                createMany: {
+                    args: Prisma.RarityCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.RarityCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>[];
+                };
+                delete: {
+                    args: Prisma.RarityDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>;
+                };
+                update: {
+                    args: Prisma.RarityUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.RarityDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.RarityUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.RarityUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>[];
+                };
+                upsert: {
+                    args: Prisma.RarityUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RarityPayload>;
+                };
+                aggregate: {
+                    args: Prisma.RarityAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateRarity>;
+                };
+                groupBy: {
+                    args: Prisma.RarityGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.RarityGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.RarityCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.RarityCountAggregateOutputType> | number;
                 };
             };
         };
@@ -434,31 +509,22 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export declare const CharacterScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
-    readonly rarity: "rarity";
-    readonly power: "power";
-    readonly effect: "effect";
     readonly description: "description";
-    readonly createdAt: "createdAt";
-    readonly updatedAt: "updatedAt";
+    readonly elementId: "elementId";
+    readonly rarityId: "rarityId";
+    readonly deletedAt: "deletedAt";
 };
 export type CharacterScalarFieldEnum = (typeof CharacterScalarFieldEnum)[keyof typeof CharacterScalarFieldEnum];
-export declare const CharacterStatsScalarFieldEnum: {
+export declare const ElementScalarFieldEnum: {
     readonly id: "id";
-    readonly attack: "attack";
-    readonly critChance: "critChance";
-    readonly element: "element";
-    readonly magic: "magic";
-    readonly charm: "charm";
-    readonly speed: "speed";
-    readonly aggression: "aggression";
-    readonly agility: "agility";
-    readonly mana: "mana";
-    readonly magicDefense: "magicDefense";
-    readonly magicPower: "magicPower";
-    readonly poisonDamage: "poisonDamage";
-    readonly characterId: "characterId";
+    readonly name: "name";
 };
-export type CharacterStatsScalarFieldEnum = (typeof CharacterStatsScalarFieldEnum)[keyof typeof CharacterStatsScalarFieldEnum];
+export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeof ElementScalarFieldEnum];
+export declare const RarityScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+};
+export type RarityScalarFieldEnum = (typeof RarityScalarFieldEnum)[keyof typeof RarityScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
@@ -604,7 +670,8 @@ export type PrismaClientOptions = ({
 };
 export type GlobalOmitConfig = {
     character?: Prisma.CharacterOmit;
-    characterStats?: Prisma.CharacterStatsOmit;
+    element?: Prisma.ElementOmit;
+    rarity?: Prisma.RarityOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';
 export type LogDefinition = {

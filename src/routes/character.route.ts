@@ -4,7 +4,14 @@ import {
   createCharacterValidation,
   getCharactersByIdValidation,
 } from "../middleware/character.validation";
-import { created, deletedChar, getAll, getById, search, updated } from "../contoller/character.controller";
+import {
+  created,
+  deletedChar,
+  getAll,
+  getById,
+  search,
+  updated,
+} from "../controller/character.controller";
 
 const router = Router();
 

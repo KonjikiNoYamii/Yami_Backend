@@ -1,15 +1,20 @@
-import * as Prisma from './internal/prismaNamespaceBrowser.js';
+import * as Prisma from './internal/prismaNamespaceBrowser';
 export { Prisma };
-export * as $Enums from './enums.js';
-export * from './enums.js';
+export * as $Enums from './enums';
+export * from './enums';
 /**
  * Model Character
  *
  */
 export type Character = Prisma.CharacterModel;
 /**
- * Model CharacterStats
+ * Model Element
  *
  */
-export type CharacterStats = Prisma.CharacterStatsModel;
+export type Element = Prisma.ElementModel;
+/**
+ * Model Rarity
+ *
+ */
+export type Rarity = Prisma.RarityModel;
 //# sourceMappingURL=browser.d.ts.map

@@ -1,47 +1,36 @@
-import { successResponse } from "../utils/response";
-import { createCharacter, deletedCharacter, getAllCharacters, getCharacterById, searchCharacter, updateCharacter } from "../services/character.service";
+import { successResponse, errorResponse } from "../utils/response"; // sesuaikan path
+import { createCharacter, deleteCharacter, getAllCharacters, getCharacterById, searchCharacters, updateCharacter } from "../services/character.service";
 export const getAll = async (_req, res) => {
-    const { characters, total } = await getAllCharacters();
-    successResponse(res, "Character berhasil diambil!", {
-        jumlah: total,
-        data: characters
-    });
-};
-export const search = async (req, res) => {
-    const { nama, kelangkaan, min_power, max_power } = req.query;
-    const result = await searchCharacter(nama?.toString(), kelangkaan?.toString(), min_power?.toString(), max_power?.toString());
-    res.json({
-        succes: true,
-        result: result,
-    });
+    const result = await getAllCharacters();
+    return successResponse(res, "Characters fetched successfully", result);
 };
 export const getById = async (req, res) => {
-    if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!");
+    const id = Number(req.params.id);
+    const char = await getCharacterById(id);
+    if (!char) {
+        return errorResponse(res, "Character not found", 404);
     }
-    const character = await getCharacterById(req.params.id);
-    successResponse(res, "Character berhasil diambil", character, null, 200);
+    return successResponse(res, "Character fetched successfully", char);
 };
-export const create = async (req, res) => {
-    const { name, rarity, power, effect, description, stats } = req.body;
-    const data = {
-        name: name.toString(), rarity: rarity.toString(), power: Number(power), effect: effect.toString(), description: description.toString(), stats: stats
-    };
-    const newCharacter = await createCharacter(data);
-    successResponse(res, "Character ditambahkan!", newCharacter, null, 201);
+export const search = async (req, res) => {
+    const keyword = req.query.q?.toString() || "";
+    const results = await searchCharacters(keyword);
+    return successResponse(res, "Search completed", results);
 };
-export const update = async (req, res) => {
+export const created = async (req, res) => {
+    const newChar = await createCharacter(req.body);
+    return successResponse(res, "Character created successfully", newChar, null, 201);
+};
+export const updated = async (req, res) => {
+    const id = Number(req.params.id);
+    const updated = await updateCharacter(id, req.body);
+    return successResponse(res, "Character updated successfully", updated);
+};
+export const deletedChar = async (req, res) => {
     if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!");
+        throw new Error("Tidak ditemukanQ");
     }
-    const character = await updateCharacter(req.params.id, req.body);
-    successResponse(res, "Character berhasil di update!", character, null, 201);
-};
-export const deleted = async (req, res) => {
-    if (!req.params.id) {
-        throw new Error("Tidak ditemukan!");
-    }
-    const deleted = await deletedCharacter(req.params.id);
-    successResponse(res, "Character berhasil dihapus!", deleted, null, 200);
+    const deleted = await deleteCharacter(req.params.id);
+    return successResponse(res, "Character deleted successfully", deleted);
 };
 //# sourceMappingURL=character.controller.js.map

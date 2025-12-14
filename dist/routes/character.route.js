@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { create, getAll, getById, search, update, } from "../contoller/character.controller";
-import { createCharacterValidation, getCharactersByIdValidation, validate } from "../middleware/character.validation";
-import { deleted } from "../contoller/categories.controller";
+import { validate } from "../utils/validator";
+import { createCharacterValidation, getCharactersByIdValidation, } from "../middleware/character.validation";
+import { created, deletedChar, getAll, getById, search, updated } from "../contoller/character.controller";
 const router = Router();
 router.get("/", getAll);
 router.get("/search", search);
 router.get("/:id", validate(getCharactersByIdValidation), getById);
-router.post("/", validate(createCharacterValidation), create);
-router.put("/:id", update);
-router.delete("/:id", deleted);
+router.post("/", validate(createCharacterValidation), created);
+router.put("/:id", updated);
+router.delete("/:id", deletedChar);
 export default router;
 //# sourceMappingURL=character.route.js.map

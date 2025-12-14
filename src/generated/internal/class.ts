@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.1.0",
   "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "postgresql",
-  "inlineSchema": "model Character {\n  id          Int     @id @default(autoincrement())\n  name        String\n  description String?\n\n  elementId Int\n  rarityId  Int\n\n  element Element @relation(fields: [elementId], references: [id])\n  rarity  Rarity  @relation(fields: [rarityId], references: [id])\n}\n\nmodel Element {\n  id         Int         @id @default(autoincrement())\n  name       String\n  characters Character[]\n}\n\nmodel Rarity {\n  id         Int         @id @default(autoincrement())\n  name       String\n  characters Character[]\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n",
+  "inlineSchema": "model Category {\n  id        Int       @id @default(autoincrement())\n  name      String\n  products  Product[] // 1 Category -> Banyak Product\n  deletedAt DateTime?\n}\n\nmodel Character {\n  id          Int     @id @default(autoincrement())\n  name        String\n  description String?\n\n  elementId Int\n  rarityId  Int\n\n  element   Element   @relation(fields: [elementId], references: [id])\n  rarity    Rarity    @relation(fields: [rarityId], references: [id])\n  deletedAt DateTime?\n}\n\nmodel Element {\n  id         Int         @id @default(autoincrement())\n  name       String\n  characters Character[]\n}\n\nmodel Order {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n\n  userId Int\n  user   User @relation(fields: [userId], references: [id])\n\n  orderItems OrderItem[]\n\n  deletedAt DateTime?\n}\n\nmodel OrderItem {\n  id       Int     @id @default(autoincrement())\n  quantity Decimal @db.Decimal(10, 2) // Quantity sekarang Decimal\n\n  orderId Int\n  order   Order @relation(fields: [orderId], references: [id])\n\n  productId Int\n  product   Product @relation(fields: [productId], references: [id])\n\n  deletedAt DateTime?\n}\n\nmodel Product {\n  id          Int     @id @default(autoincrement())\n  name        String\n  description String? // Tambahan deskripsi product\n  price       Decimal @db.Decimal(10, 2)\n  stock       Int     @default(0) // Tambahan stock\n\n  categoryId Int\n  category   Category @relation(fields: [categoryId], references: [id])\n\n  orderItems OrderItem[]\n\n  deletedAt DateTime?\n}\n\nmodel Rarity {\n  id         Int         @id @default(autoincrement())\n  name       String\n  characters Character[]\n}\n\nmodel User {\n  id       Int    @id @default(autoincrement())\n  username String @unique\n  email    String @unique\n  password String\n\n  orders Order[]\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Character\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"elementId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"rarityId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"element\",\"kind\":\"object\",\"type\":\"Element\",\"relationName\":\"CharacterToElement\"},{\"name\":\"rarity\",\"kind\":\"object\",\"type\":\"Rarity\",\"relationName\":\"CharacterToRarity\"}],\"dbName\":null},\"Element\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"characters\",\"kind\":\"object\",\"type\":\"Character\",\"relationName\":\"CharacterToElement\"}],\"dbName\":null},\"Rarity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"characters\",\"kind\":\"object\",\"type\":\"Character\",\"relationName\":\"CharacterToRarity\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CategoryToProduct\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Character\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"elementId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"rarityId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"element\",\"kind\":\"object\",\"type\":\"Element\",\"relationName\":\"CharacterToElement\"},{\"name\":\"rarity\",\"kind\":\"object\",\"type\":\"Rarity\",\"relationName\":\"CharacterToRarity\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Element\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"characters\",\"kind\":\"object\",\"type\":\"Character\",\"relationName\":\"CharacterToElement\"}],\"dbName\":null},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrderToUser\"},{\"name\":\"orderItems\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"OrderItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"OrderItemToProduct\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"stock\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToProduct\"},{\"name\":\"orderItems\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderItemToProduct\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Rarity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"characters\",\"kind\":\"object\",\"type\":\"Character\",\"relationName\":\"CharacterToRarity\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -58,8 +58,8 @@ export interface PrismaClientConstructor {
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Characters
-   * const characters = await prisma.character.findMany()
+   * // Fetch zero or more Categories
+   * const categories = await prisma.category.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -80,8 +80,8 @@ export interface PrismaClientConstructor {
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Characters
- * const characters = await prisma.character.findMany()
+ * // Fetch zero or more Categories
+ * const categories = await prisma.category.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -175,6 +175,16 @@ export interface PrismaClient<
   }>>
 
       /**
+   * `prisma.category`: Exposes CRUD operations for the **Category** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Categories
+    * const categories = await prisma.category.findMany()
+    * ```
+    */
+  get category(): Prisma.CategoryDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
    * `prisma.character`: Exposes CRUD operations for the **Character** model.
     * Example usage:
     * ```ts
@@ -195,6 +205,36 @@ export interface PrismaClient<
   get element(): Prisma.ElementDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
+   * `prisma.order`: Exposes CRUD operations for the **Order** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Orders
+    * const orders = await prisma.order.findMany()
+    * ```
+    */
+  get order(): Prisma.OrderDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.orderItem`: Exposes CRUD operations for the **OrderItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrderItems
+    * const orderItems = await prisma.orderItem.findMany()
+    * ```
+    */
+  get orderItem(): Prisma.OrderItemDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.product`: Exposes CRUD operations for the **Product** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Products
+    * const products = await prisma.product.findMany()
+    * ```
+    */
+  get product(): Prisma.ProductDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
    * `prisma.rarity`: Exposes CRUD operations for the **Rarity** model.
     * Example usage:
     * ```ts
@@ -203,6 +243,16 @@ export interface PrismaClient<
     * ```
     */
   get rarity(): Prisma.RarityDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.user`: Exposes CRUD operations for the **User** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Users
+    * const users = await prisma.user.findMany()
+    * ```
+    */
+  get user(): Prisma.UserDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

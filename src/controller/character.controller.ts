@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { successResponse, errorResponse } from "../utils/response"; // sesuaikan path
 import { createCharacter, deleteCharacter, getAllCharacters, getCharacterById, searchCharacters, updateCharacter } from "../services/character.service"
 
-export const getAll = async (_req: Request, res: Response) => {
+export const getAll = async (_req: Request, res: Response)=> {
   const result = await getAllCharacters();
   return successResponse(res, "Characters fetched successfully", result);
 };
@@ -38,8 +38,10 @@ export const updated = async (req: Request, res: Response) => {
 };
 
 export const deletedChar = async (req: Request, res: Response) => {
-  const id = Number(req.params.id);
+  if (!req.params.id) {
+    throw new Error("Tidak ditemukanQ")
+  }
 
-  const deleted = await deleteCharacter(id);
+  const deleted = await deleteCharacter(req.params.id);
   return successResponse(res, "Character deleted successfully", deleted);
 };

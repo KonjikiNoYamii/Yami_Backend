@@ -4,7 +4,8 @@ import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from "./middleware/error.handler";
 import characterRouter from './routes/character.route';
-import categoriesRouter from './routes/categories.route';
+import routerElement from './routes/element.route';
+import routerRarity from './routes/rarity.routes';
 import { successResponse } from "./utils/response";
 import { requestLogger } from "./middleware/logger.middleware";
 import { apiKeyValidator } from "./middleware/apiKey.middleware";
@@ -27,7 +28,8 @@ app.get("/api/error-test", () => {
     throw new Error("Ini error test");
 });
 app.use('/api/characters', characterRouter);
-app.use('/api/categories', categoriesRouter);
+app.use('/api/element', routerElement);
+app.use('/api/rarity', routerRarity);
 app.use(/.*/, (req, _res) => {
     throw new Error(`Route ${req.originalUrl} tidak ada di API`);
 });
