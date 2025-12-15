@@ -60,10 +60,10 @@ export type Element = Prisma.ElementModel
  */
 export type Order = Prisma.OrderModel
 /**
- * Model OrderItem
+ * Model OrderItems
  * 
  */
-export type OrderItem = Prisma.OrderItemModel
+export type OrderItems = Prisma.OrderItemsModel
 /**
  * Model Product
  * 

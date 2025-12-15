@@ -55,7 +55,7 @@ export const ModelName = {
   Character: 'Character',
   Element: 'Element',
   Order: 'Order',
-  OrderItem: 'OrderItem',
+  OrderItems: 'OrderItems',
   Product: 'Product',
   Rarity: 'Rarity',
   User: 'User'
@@ -108,23 +108,27 @@ export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeo
 
 export const OrderScalarFieldEnum = {
   id: 'id',
-  createdAt: 'createdAt',
   userId: 'userId',
+  total: 'total',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
 } as const
 
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
 
 
-export const OrderItemScalarFieldEnum = {
+export const OrderItemsScalarFieldEnum = {
   id: 'id',
-  quantity: 'quantity',
   orderId: 'orderId',
   productId: 'productId',
+  quantity: 'quantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
 } as const
 
-export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
+export type OrderItemsScalarFieldEnum = (typeof OrderItemsScalarFieldEnum)[keyof typeof OrderItemsScalarFieldEnum]
 
 
 export const ProductScalarFieldEnum = {
@@ -134,6 +138,8 @@ export const ProductScalarFieldEnum = {
   price: 'price',
   stock: 'stock',
   categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
 } as const
 
@@ -150,11 +156,9 @@ export type RarityScalarFieldEnum = (typeof RarityScalarFieldEnum)[keyof typeof 
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  username: 'username',
+  name: 'name',
   email: 'email',
-  password: 'password',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
+  password_hash: 'password_hash',
   deletedAt: 'deletedAt'
 } as const
 

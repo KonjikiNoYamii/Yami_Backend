@@ -26,9 +26,14 @@ export declare const JsonNull: import("@prisma/client-runtime-utils").JsonNullCl
  */
 export declare const AnyNull: import("@prisma/client-runtime-utils").AnyNullClass;
 export declare const ModelName: {
+    readonly Category: "Category";
     readonly Character: "Character";
     readonly Element: "Element";
+    readonly Order: "Order";
+    readonly OrderItems: "OrderItems";
+    readonly Product: "Product";
     readonly Rarity: "Rarity";
+    readonly User: "User";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -38,6 +43,12 @@ export declare const TransactionIsolationLevel: {
     readonly Serializable: "Serializable";
 };
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
+export declare const CategoryScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly deletedAt: "deletedAt";
+};
+export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum];
 export declare const CharacterScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
@@ -52,11 +63,50 @@ export declare const ElementScalarFieldEnum: {
     readonly name: "name";
 };
 export type ElementScalarFieldEnum = (typeof ElementScalarFieldEnum)[keyof typeof ElementScalarFieldEnum];
+export declare const OrderScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly total: "total";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+    readonly deletedAt: "deletedAt";
+};
+export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum];
+export declare const OrderItemsScalarFieldEnum: {
+    readonly id: "id";
+    readonly orderId: "orderId";
+    readonly productId: "productId";
+    readonly quantity: "quantity";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+    readonly deletedAt: "deletedAt";
+};
+export type OrderItemsScalarFieldEnum = (typeof OrderItemsScalarFieldEnum)[keyof typeof OrderItemsScalarFieldEnum];
+export declare const ProductScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly description: "description";
+    readonly price: "price";
+    readonly stock: "stock";
+    readonly categoryId: "categoryId";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+    readonly deletedAt: "deletedAt";
+};
+export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum];
 export declare const RarityScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
 };
 export type RarityScalarFieldEnum = (typeof RarityScalarFieldEnum)[keyof typeof RarityScalarFieldEnum];
+export declare const UserScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly email: "email";
+    readonly password_hash: "password_hash";
+    readonly deletedAt: "deletedAt";
+};
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

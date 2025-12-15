@@ -68,9 +68,14 @@ export const JsonNull = runtime.JsonNull;
  */
 export const AnyNull = runtime.AnyNull;
 export const ModelName = {
+    Category: 'Category',
     Character: 'Character',
     Element: 'Element',
-    Rarity: 'Rarity'
+    Order: 'Order',
+    OrderItems: 'OrderItems',
+    Product: 'Product',
+    Rarity: 'Rarity',
+    User: 'User'
 };
 /**
  * Enums
@@ -81,6 +86,11 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
     RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
 });
+export const CategoryScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    deletedAt: 'deletedAt'
+};
 export const CharacterScalarFieldEnum = {
     id: 'id',
     name: 'name',
@@ -93,9 +103,44 @@ export const ElementScalarFieldEnum = {
     id: 'id',
     name: 'name'
 };
+export const OrderScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    total: 'total',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
+};
+export const OrderItemsScalarFieldEnum = {
+    id: 'id',
+    orderId: 'orderId',
+    productId: 'productId',
+    quantity: 'quantity',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
+};
+export const ProductScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    price: 'price',
+    stock: 'stock',
+    categoryId: 'categoryId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
+};
 export const RarityScalarFieldEnum = {
     id: 'id',
     name: 'name'
+};
+export const UserScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    email: 'email',
+    password_hash: 'password_hash',
+    deletedAt: 'deletedAt'
 };
 export const SortOrder = {
     asc: 'asc',

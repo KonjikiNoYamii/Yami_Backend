@@ -19,14 +19,14 @@ export const getUserById = async (id: string) => {
 }
 
 export const createUser = async (
-    username: string,
+    name: string,
     email: string,
-    password: string
+    password_hash: string
 ) => {
 
     const exist = await prisma.user.findFirst({
         where: {
-            OR: [{ username }, { email }],
+            OR: [{ name }, { email }],
             deletedAt: null
         }
     })
@@ -36,7 +36,7 @@ export const createUser = async (
     }
 
     return await prisma.user.create({
-        data: { username, email, password }
+        data: { name, email, password_hash }
     })
 }
 

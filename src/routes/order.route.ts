@@ -3,6 +3,7 @@ import * as userController from "../controller/order.controller";
 
 const router = Router();
 
+router.post('/checkout', userController.checkout)
 router.get("/", userController.getAll);
 router.post("/", userController.create);
 router.get("/:id", userController.getById);

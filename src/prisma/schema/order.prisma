@@ -1,11 +1,14 @@
 model Order {
-  id          Int          @id @default(autoincrement())
-  createdAt   DateTime     @default(now())
+    id     Int     @id @default(autoincrement())
+    userId Int
+    total  Decimal @db.Decimal(10, 2)
 
-  userId      Int
-  user        User         @relation(fields: [userId], references: [id])
+    user       User @relation(fields: [userId], references: [id])
+    orderItems OrderItems[]
 
-  orderItems  OrderItem[]
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
 
-  deletedAt   DateTime?
+    @@map("orders")
 }

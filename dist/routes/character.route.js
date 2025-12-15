@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validate } from "../utils/validator";
 import { createCharacterValidation, getCharactersByIdValidation, } from "../middleware/character.validation";
-import { created, deletedChar, getAll, getById, search, updated } from "../contoller/character.controller";
+import { created, deletedChar, getAll, getById, search, updated, } from "../controller/character.controller";
 const router = Router();
 router.get("/", getAll);
 router.get("/search", search);

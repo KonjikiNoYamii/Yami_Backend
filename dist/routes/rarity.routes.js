@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validate } from "../utils/validator";
-import { created, deleted, getAll, getById, search, updated } from "../contoller/rarity.controller";
-import { createRarityValidation, getRarityByIdValidation, updateRarityValidation } from "../middleware/rarity.validation";
+import { created, deleted, getAll, getById, search, updated, } from "../controller/rarity.controller";
+import { createRarityValidation, getRarityByIdValidation, updateRarityValidation, } from "../middleware/rarity.validation";
 const router = Router();
 router.get("/", getAll);
 router.get("/search", search);

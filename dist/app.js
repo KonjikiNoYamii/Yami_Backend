@@ -6,6 +6,11 @@ import { errorHandler } from "./middleware/error.handler";
 import characterRouter from './routes/character.route';
 import routerElement from './routes/element.route';
 import routerRarity from './routes/rarity.routes';
+import routerProduct from './routes/product.route';
+import routerUser from './routes/user.route';
+import routerOrder from './routes/order.route';
+import routerOrderItem from './routes/orderItem.route';
+import routerCategory from './routes/category.route';
 import { successResponse } from "./utils/response";
 import { requestLogger } from "./middleware/logger.middleware";
 import { apiKeyValidator } from "./middleware/apiKey.middleware";
@@ -30,6 +35,11 @@ app.get("/api/error-test", () => {
 app.use('/api/characters', characterRouter);
 app.use('/api/element', routerElement);
 app.use('/api/rarity', routerRarity);
+app.use('/api/products', routerProduct);
+app.use('/api/users', routerUser);
+app.use('/api/orders', routerOrder);
+app.use('/api/orderItems', routerOrderItem);
+app.use('/api/category', routerCategory);
 app.use(/.*/, (req, _res) => {
     throw new Error(`Route ${req.originalUrl} tidak ada di API`);
 });

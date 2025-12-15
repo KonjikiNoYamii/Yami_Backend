@@ -1,14 +1,17 @@
 model Product {
-  id          Int          @id @default(autoincrement())
-  name        String
-  description String?       // Tambahan deskripsi product
-  price       Decimal       @db.Decimal(10, 2)
-  stock       Int           @default(0)     // Tambahan stock
+    id          Int     @id @default(autoincrement())
+    name        String
+    description String?
+    price       Decimal @db.Decimal(10, 2)
+    stock       Int     @default(0)
 
-  categoryId  Int
-  category    Category      @relation(fields: [categoryId], references: [id])
+    categoryId Int?
+    category   Category? @relation(fields: [categoryId], references: [id])
 
-  orderItems  OrderItem[]
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    deletedAt  DateTime?
+    orderItems OrderItems[]
 
-  deletedAt   DateTime?
+    @@map("products")
 }

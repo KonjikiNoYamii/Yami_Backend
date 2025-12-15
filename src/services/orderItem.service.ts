@@ -3,7 +3,7 @@ import { getPrisma } from "../prisma"
 const prisma = getPrisma()
 
 export const getAllOrderItem = async () => {
-    const items = await prisma.orderItem.findMany({
+    const items = await prisma.orderItems.findMany({
         where: { deletedAt: null },
         include: {
             order: true,
@@ -15,7 +15,7 @@ export const getAllOrderItem = async () => {
 }
 
 export const getOrderItemById = async (id: string) => {
-    return prisma.orderItem.findUnique({
+    return prisma.orderItems.findUnique({
         where: { id: parseInt(id) },
         include: {
             order: true,
@@ -27,9 +27,9 @@ export const getOrderItemById = async (id: string) => {
 export const createOrderItem = async (
     orderId: number,
     productId: number,
-    quantity: string | number
+    quantity:  number
 ) => {
-    return prisma.orderItem.create({
+    return prisma.orderItems.create({
         data: {
             orderId,
             productId,
@@ -39,7 +39,7 @@ export const createOrderItem = async (
 }
 
 export const updateOrderItem = async (id: string, data: any) => {
-    return prisma.orderItem.update({
+    return prisma.orderItems.update({
         where: { id: parseInt(id), deletedAt: null },
         data: {
             ...data,
@@ -49,8 +49,9 @@ export const updateOrderItem = async (id: string, data: any) => {
 }
 
 export const deleteOrderItem = async (id: string) => {
-    return prisma.orderItem.update({
+    return prisma.orderItems.update({
         where: { id: parseInt(id), deletedAt: null },
         data: { deletedAt: new Date() }
     })
 }
+

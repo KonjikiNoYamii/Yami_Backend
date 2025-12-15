@@ -5,8 +5,24 @@ import {
     deleteOrder,
     getAllOrder,
     getOrderById,
-    updateOrder
+    updateOrder,
+    type CreateOrder
 } from "../services/order.service"
+
+import { checkout as checkoutOrder } from "../services/order.service"
+
+export const checkout = async (req: Request, res: Response) => {
+  const data: CreateOrder = req.body
+  const result = await checkoutOrder(data)
+
+  return successResponse(
+    res,
+    "Order berhasil dibuat!!",
+    result,
+    null,
+    201
+  )
+}
 
 export const getAll = async (_req: Request, res: Response) => {
     const result = await getAllOrder()
@@ -22,8 +38,8 @@ export const getById = async (req: Request, res: Response) => {
 }
 
 export const create = async (req: Request, res: Response) => {
-    const { userId } = req.body
-    const order = await createOrder(userId)
+    const { userId, total } = req.body
+    const order = await createOrder(userId, total)
 
     successResponse(res, "Order berhasil dibuat!", order, null, 201)
 }
