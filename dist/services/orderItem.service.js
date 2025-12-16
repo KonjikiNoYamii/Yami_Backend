@@ -24,7 +24,7 @@ export const createOrderItem = async (orderId, productId, quantity) => {
         data: {
             orderId,
             productId,
-            quantity
+            quantity,
         }
     });
 };

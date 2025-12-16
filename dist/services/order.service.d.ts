@@ -1,13 +1,43 @@
 export interface CreateOrder {
     userId: number;
-    total: number;
-    orderItem: orderitem[];
+    orderItem: OrderItemInput[];
 }
-export interface orderitem {
+export interface OrderItemInput {
     productId: number;
     quantity: number;
 }
 export declare const checkout: (data: CreateOrder) => Promise<{
+    orderItems: ({
+        product: {
+            name: string;
+            description: string | null;
+            id: number;
+            deletedAt: Date | null;
+            price: import("@prisma/client-runtime-utils").Decimal;
+            stock: number;
+            categoryId: number | null;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    } & {
+        id: number;
+        deletedAt: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+        quantity: number;
+        priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
+        productId: number;
+        orderId: number;
+    })[];
+    user: {
+        name: string;
+        id: number;
+        deletedAt: Date | null;
+        email: string;
+        password_hash: string;
+        role: string;
+    };
+} & {
     id: number;
     deletedAt: Date | null;
     total: import("@prisma/client-runtime-utils").Decimal;
@@ -35,8 +65,9 @@ export declare const getAllOrder: () => Promise<{
             createdAt: Date;
             updatedAt: Date;
             quantity: number;
-            orderId: number;
+            priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
             productId: number;
+            orderId: number;
         })[];
         user: {
             name: string;
@@ -44,6 +75,7 @@ export declare const getAllOrder: () => Promise<{
             deletedAt: Date | null;
             email: string;
             password_hash: string;
+            role: string;
         };
     } & {
         id: number;
@@ -74,8 +106,9 @@ export declare const getOrderById: (id: string) => Promise<({
         createdAt: Date;
         updatedAt: Date;
         quantity: number;
-        orderId: number;
+        priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
         productId: number;
+        orderId: number;
     })[];
     user: {
         name: string;
@@ -83,6 +116,7 @@ export declare const getOrderById: (id: string) => Promise<({
         deletedAt: Date | null;
         email: string;
         password_hash: string;
+        role: string;
     };
 } & {
     id: number;

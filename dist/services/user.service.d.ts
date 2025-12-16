@@ -14,6 +14,7 @@ export declare const getAllUser: () => Promise<{
         deletedAt: Date | null;
         email: string;
         password_hash: string;
+        role: string;
     })[];
     total: number;
 }>;
@@ -32,6 +33,7 @@ export declare const getUserById: (id: string) => Promise<({
     deletedAt: Date | null;
     email: string;
     password_hash: string;
+    role: string;
 }) | null>;
 export declare const createUser: (name: string, email: string, password_hash: string) => Promise<{
     name: string;
@@ -39,6 +41,7 @@ export declare const createUser: (name: string, email: string, password_hash: st
     deletedAt: Date | null;
     email: string;
     password_hash: string;
+    role: string;
 }>;
 export declare const updateUser: (id: string, data: any) => Promise<{
     name: string;
@@ -46,6 +49,7 @@ export declare const updateUser: (id: string, data: any) => Promise<{
     deletedAt: Date | null;
     email: string;
     password_hash: string;
+    role: string;
 }>;
 export declare const deleteUser: (id: string) => Promise<{
     name: string;
@@ -53,5 +57,6 @@ export declare const deleteUser: (id: string) => Promise<{
     deletedAt: Date | null;
     email: string;
     password_hash: string;
+    role: string;
 }>;
 //# sourceMappingURL=user.service.d.ts.map

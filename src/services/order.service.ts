@@ -3,7 +3,6 @@ import { getPrisma } from "../prisma"
 const prisma = getPrisma()
 
 export interface CreateOrder {
-  userId: number
   orderItem: OrderItemInput[]
 }
 
@@ -12,7 +11,7 @@ export interface OrderItemInput {
   quantity: number
 }
 
-export const checkout = async (data: CreateOrder) => {
+export const checkout = async (data: CreateOrder, userId:number) => {
   return await prisma.$transaction(async (tx) => {
 
     let total = 0
@@ -64,11 +63,10 @@ export const checkout = async (data: CreateOrder) => {
         }
       })
     }
-
     // 3️⃣ Buat order + pivot SEKALIGUS (nested write)
 const newOrder = await tx.order.create({
   data: {
-    userId: data.userId,
+    userId,
     total,
     orderItems: {
       create: orderItemsData

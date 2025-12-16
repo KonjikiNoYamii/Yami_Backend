@@ -1,10 +1,10 @@
 import { successResponse } from "../utils/response";
 import { createOrder, deleteOrder, getAllOrder, getOrderById, updateOrder } from "../services/order.service";
-import { checkout as checkoutOrder } from '../services/order.service';
+import { checkout as checkoutOrder } from "../services/order.service";
 export const checkout = async (req, res) => {
     const data = req.body;
     const result = await checkoutOrder(data);
-    successResponse(res, "Order berhasil dibuat!!", result, null, 201);
+    return successResponse(res, "Order berhasil dibuat!!", result, null, 201);
 };
 export const getAll = async (_req, res) => {
     const result = await getAllOrder();

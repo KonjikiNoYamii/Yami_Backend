@@ -116,6 +116,7 @@ export const OrderItemsScalarFieldEnum = {
     orderId: 'orderId',
     productId: 'productId',
     quantity: 'quantity',
+    priceAtTime: 'priceAtTime',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
@@ -140,7 +141,8 @@ export const UserScalarFieldEnum = {
     name: 'name',
     email: 'email',
     password_hash: 'password_hash',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    role: 'role'
 };
 export const SortOrder = {
     asc: 'asc',

@@ -77,6 +77,7 @@ export declare const OrderItemsScalarFieldEnum: {
     readonly orderId: "orderId";
     readonly productId: "productId";
     readonly quantity: "quantity";
+    readonly priceAtTime: "priceAtTime";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
     readonly deletedAt: "deletedAt";
@@ -105,6 +106,7 @@ export declare const UserScalarFieldEnum: {
     readonly email: "email";
     readonly password_hash: "password_hash";
     readonly deletedAt: "deletedAt";
+    readonly role: "role";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 export declare const SortOrder: {

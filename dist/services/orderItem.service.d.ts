@@ -25,8 +25,9 @@ export declare const getAllOrderItem: () => Promise<{
         createdAt: Date;
         updatedAt: Date;
         quantity: number;
-        orderId: number;
+        priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
         productId: number;
+        orderId: number;
     })[];
     total: number;
 }>;
@@ -56,8 +57,9 @@ export declare const getOrderItemById: (id: string) => Promise<({
     createdAt: Date;
     updatedAt: Date;
     quantity: number;
-    orderId: number;
+    priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
     productId: number;
+    orderId: number;
 }) | null>;
 export declare const createOrderItem: (orderId: number, productId: number, quantity: number) => Promise<{
     id: number;
@@ -65,8 +67,9 @@ export declare const createOrderItem: (orderId: number, productId: number, quant
     createdAt: Date;
     updatedAt: Date;
     quantity: number;
-    orderId: number;
+    priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
     productId: number;
+    orderId: number;
 }>;
 export declare const updateOrderItem: (id: string, data: any) => Promise<{
     id: number;
@@ -74,8 +77,9 @@ export declare const updateOrderItem: (id: string, data: any) => Promise<{
     createdAt: Date;
     updatedAt: Date;
     quantity: number;
-    orderId: number;
+    priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
     productId: number;
+    orderId: number;
 }>;
 export declare const deleteOrderItem: (id: string) => Promise<{
     id: number;
@@ -83,7 +87,8 @@ export declare const deleteOrderItem: (id: string) => Promise<{
     createdAt: Date;
     updatedAt: Date;
     quantity: number;
-    orderId: number;
+    priceAtTime: import("@prisma/client-runtime-utils").Decimal | null;
     productId: number;
+    orderId: number;
 }>;
 //# sourceMappingURL=orderItem.service.d.ts.map

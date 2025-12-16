@@ -10,6 +10,7 @@ import routerProduct from './routes/product.route';
 import routerUser from './routes/user.route';
 import routerOrder from './routes/order.route';
 import routerOrderItem from './routes/orderItem.route';
+import authRoutes from './routes/auth.route';
 import routerCategory from './routes/category.route';
 import { successResponse } from "./utils/response";
 import { requestLogger } from "./middleware/logger.middleware";
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 app.get("/api/error-test", () => {
     throw new Error("Ini error test");
 });
+app.use('/api/auth', authRoutes);
 app.use('/api/characters', characterRouter);
 app.use('/api/element', routerElement);
 app.use('/api/rarity', routerRarity);

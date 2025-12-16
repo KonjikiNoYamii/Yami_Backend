@@ -13,7 +13,10 @@ import { checkout as checkoutOrder } from "../services/order.service"
 
 export const checkout = async (req: Request, res: Response) => {
   const data: CreateOrder = req.body
-  const result = await checkoutOrder(data)
+  if (!req.user?.id) {
+    throw new Error("Id tidak ditemukan!")
+  }
+  const result = await checkoutOrder(data, req.user?.id)
 
   return successResponse(
     res,

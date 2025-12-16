@@ -1,10 +1,11 @@
 import { Router } from "express";
 import * as userController from "../controller/order.controller";
+import { authenticate } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post('/checkout', userController.checkout)
-router.get("/", userController.getAll);
+router.post('/checkout', authenticate,userController.checkout)
+router.get("/", authenticate,userController.getAll);
 router.post("/", userController.create);
 router.get("/:id", userController.getById);
 router.put("/:id", userController.update);
