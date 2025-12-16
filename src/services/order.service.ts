@@ -66,24 +66,24 @@ export const checkout = async (data: CreateOrder) => {
     }
 
     // 3️⃣ Buat order + pivot SEKALIGUS (nested write)
-    const newOrder = await tx.order.create({
-      data: {
-        userId: data.userId,
-        total,
-        orderItems: {
-          create: orderItemsData
-        }
-      },
+const newOrder = await tx.order.create({
+  data: {
+    userId: data.userId,
+    total,
+    orderItems: {
+      create: orderItemsData
+    }
+  },
+  include: {
+    user: true,
+    orderItems: {
       include: {
-        user:true,
-        orderItems: {
-          include: {
-            product: true,
-            order:true
-          }
-        }
+        product: true
       }
-    })
+    }
+  }
+})
+
 
     return newOrder
   })

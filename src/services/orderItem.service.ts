@@ -27,13 +27,13 @@ export const getOrderItemById = async (id: string) => {
 export const createOrderItem = async (
     orderId: number,
     productId: number,
-    quantity:  number
+    quantity:  number,
 ) => {
     return prisma.orderItems.create({
         data: {
             orderId,
             productId,
-            quantity
+            quantity,
         }
     })
 }

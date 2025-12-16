@@ -43,7 +43,7 @@ async function main() {
   // 2. Create Users (50 users)
   console.log('👥 Creating users...');
   const users = await Promise.all(
-    Array.from({ length: 50 }, async () => {
+    Array.from({ length: 100 }, async () => {
       const password = await bcrypt.hash('password123', 10);
       return prisma.user.create({
         data: {
