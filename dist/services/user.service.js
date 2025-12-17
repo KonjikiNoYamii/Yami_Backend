@@ -14,10 +14,10 @@ export const getUserById = async (id) => {
         include: { orders: true }
     });
 };
-export const createUser = async (name, email, password_hash) => {
+export const createUser = async (username, email, password_hash) => {
     const exist = await prisma.user.findFirst({
         where: {
-            OR: [{ name }, { email }],
+            OR: [{ username }, { email }],
             deletedAt: null
         }
     });
@@ -25,7 +25,7 @@ export const createUser = async (name, email, password_hash) => {
         throw new Error("Username atau email sudah digunakan");
     }
     return await prisma.user.create({
-        data: { name, email, password_hash }
+        data: { username, email, password_hash }
     });
 };
 export const updateUser = async (id, data) => {

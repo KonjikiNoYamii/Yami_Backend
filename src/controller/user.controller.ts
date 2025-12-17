@@ -23,9 +23,9 @@ export const getById = async (req: Request, res: Response) => {
 }
 
 export const create = async (req: Request, res: Response) => {
-    const { username, email, password } = req.body
+    const { username, email, password_hash } = req.body
 
-    const user = await createUser(username, email, password)
+    const user = await createUser(username, email, password_hash)
 
     successResponse(res, "User berhasil dibuat", user, null, 201)
 }

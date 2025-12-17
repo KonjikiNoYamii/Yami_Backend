@@ -237,6 +237,7 @@ export declare const ModelName: {
     readonly Order: "Order";
     readonly OrderItems: "OrderItems";
     readonly Product: "Product";
+    readonly Profile: "Profile";
     readonly Rarity: "Rarity";
     readonly User: "User";
 };
@@ -251,7 +252,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "category" | "character" | "element" | "order" | "orderItems" | "product" | "rarity" | "user";
+        modelProps: "category" | "character" | "element" | "order" | "orderItems" | "product" | "profile" | "rarity" | "user";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -699,6 +700,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
+        Profile: {
+            payload: Prisma.$ProfilePayload<ExtArgs>;
+            fields: Prisma.ProfileFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.ProfileFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.ProfileFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>;
+                };
+                findFirst: {
+                    args: Prisma.ProfileFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.ProfileFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>;
+                };
+                findMany: {
+                    args: Prisma.ProfileFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>[];
+                };
+                create: {
+                    args: Prisma.ProfileCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>;
+                };
+                createMany: {
+                    args: Prisma.ProfileCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.ProfileCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>[];
+                };
+                delete: {
+                    args: Prisma.ProfileDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>;
+                };
+                update: {
+                    args: Prisma.ProfileUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>;
+                };
+                deleteMany: {
+                    args: Prisma.ProfileDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.ProfileUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.ProfileUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>[];
+                };
+                upsert: {
+                    args: Prisma.ProfileUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfilePayload>;
+                };
+                aggregate: {
+                    args: Prisma.ProfileAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateProfile>;
+                };
+                groupBy: {
+                    args: Prisma.ProfileGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.ProfileGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.ProfileCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.ProfileCountAggregateOutputType> | number;
+                };
+            };
+        };
         Rarity: {
             payload: Prisma.$RarityPayload<ExtArgs>;
             fields: Prisma.RarityFieldRefs;
@@ -927,12 +1002,22 @@ export declare const ProductScalarFieldEnum: {
     readonly description: "description";
     readonly price: "price";
     readonly stock: "stock";
+    readonly image: "image";
     readonly categoryId: "categoryId";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
     readonly deletedAt: "deletedAt";
 };
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum];
+export declare const ProfileScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly gender: "gender";
+    readonly address: "address";
+    readonly profilePictureUrl: "profilePictureUrl";
+    readonly userId: "userId";
+};
+export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum];
 export declare const RarityScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
@@ -940,7 +1025,7 @@ export declare const RarityScalarFieldEnum: {
 export type RarityScalarFieldEnum = (typeof RarityScalarFieldEnum)[keyof typeof RarityScalarFieldEnum];
 export declare const UserScalarFieldEnum: {
     readonly id: "id";
-    readonly name: "name";
+    readonly username: "username";
     readonly email: "email";
     readonly password_hash: "password_hash";
     readonly deletedAt: "deletedAt";
@@ -1105,6 +1190,7 @@ export type GlobalOmitConfig = {
     order?: Prisma.OrderOmit;
     orderItems?: Prisma.OrderItemsOmit;
     product?: Prisma.ProductOmit;
+    profile?: Prisma.ProfileOmit;
     rarity?: Prisma.RarityOmit;
     user?: Prisma.UserOmit;
 };

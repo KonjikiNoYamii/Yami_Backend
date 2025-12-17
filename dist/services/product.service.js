@@ -46,7 +46,8 @@ export const createProduct = async (data) => {
             description: data.description ?? null,
             price: data.price,
             stock: data.stock,
-            categoryId: data.categoryId
+            categoryId: data.categoryId,
+            image: data.image
         }
     });
 };

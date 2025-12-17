@@ -1,22 +1,22 @@
 export declare const register: (data: {
-    name: string;
+    username: string;
     email: string;
     password_hash: string;
     role?: string;
 }) => Promise<{
     email: string;
-    name: {
-        name: string;
+    username: {
         id: number;
         deletedAt: Date | null;
+        username: string;
         email: string;
         password_hash: string;
         role: string;
     };
     user: {
-        name: string;
         id: number;
         deletedAt: Date | null;
+        username: string;
         email: string;
         password_hash: string;
         role: string;
@@ -29,7 +29,7 @@ export declare const login: (data: {
 }) => Promise<{
     userReturn: {
         email: string;
-        name: string;
+        username: string;
         role: string;
     };
     token: string;

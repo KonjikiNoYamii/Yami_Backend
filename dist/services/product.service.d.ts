@@ -10,6 +10,7 @@ export declare const getProductById: (id: string) => Promise<{
     deletedAt: Date | null;
     price: import("@prisma/client-runtime-utils").Decimal;
     stock: number;
+    image: string;
     categoryId: number | null;
     createdAt: Date;
     updatedAt: Date;
@@ -21,6 +22,7 @@ export declare const createProduct: (data: {
     price: number;
     stock: number;
     categoryId: number;
+    image: string;
 }) => Promise<Product>;
 export declare const updateProduct: (id: string, data: Partial<Product>) => Promise<Product>;
 export declare const deleteProduct: (id: string) => Promise<Product>;

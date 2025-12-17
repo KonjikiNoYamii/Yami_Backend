@@ -74,6 +74,7 @@ export const ModelName = {
     Order: 'Order',
     OrderItems: 'OrderItems',
     Product: 'Product',
+    Profile: 'Profile',
     Rarity: 'Rarity',
     User: 'User'
 };
@@ -127,10 +128,19 @@ export const ProductScalarFieldEnum = {
     description: 'description',
     price: 'price',
     stock: 'stock',
+    image: 'image',
     categoryId: 'categoryId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
+};
+export const ProfileScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    gender: 'gender',
+    address: 'address',
+    profilePictureUrl: 'profilePictureUrl',
+    userId: 'userId'
 };
 export const RarityScalarFieldEnum = {
     id: 'id',
@@ -138,7 +148,7 @@ export const RarityScalarFieldEnum = {
 };
 export const UserScalarFieldEnum = {
     id: 'id',
-    name: 'name',
+    username: 'username',
     email: 'email',
     password_hash: 'password_hash',
     deletedAt: 'deletedAt',

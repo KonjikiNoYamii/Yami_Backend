@@ -7,6 +7,7 @@ export declare const getAllOrderItem: () => Promise<{
             deletedAt: Date | null;
             price: import("@prisma/client-runtime-utils").Decimal;
             stock: number;
+            image: string;
             categoryId: number | null;
             createdAt: Date;
             updatedAt: Date;
@@ -39,6 +40,7 @@ export declare const getOrderItemById: (id: string) => Promise<({
         deletedAt: Date | null;
         price: import("@prisma/client-runtime-utils").Decimal;
         stock: number;
+        image: string;
         categoryId: number | null;
         createdAt: Date;
         updatedAt: Date;

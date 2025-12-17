@@ -15,7 +15,7 @@ export const register = async (data) => {
     const hashedPassword = await bcrypt.hash(data.password_hash, 10);
     const user = await prisma.user.create({
         data: {
-            name: data.name,
+            username: data.username,
             email: data.email,
             password_hash: hashedPassword,
             role: data.role || "USER"
@@ -23,7 +23,7 @@ export const register = async (data) => {
     });
     return {
         email: user.email,
-        name: user, user,
+        username: user, user,
         role: user.role
     };
 };
@@ -43,7 +43,7 @@ export const login = async (data) => {
     const token = jwt.sign({ id: user.id, role: user.role }, config.JWT_SECRET, { expiresIn: '1h' });
     const userReturn = {
         email: user.email,
-        name: user.name,
+        username: user.username,
         role: user.role
     };
     return { userReturn, token };

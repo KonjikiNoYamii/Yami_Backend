@@ -1,12 +1,11 @@
 export interface CreateOrder {
-    userId: number;
     orderItem: OrderItemInput[];
 }
 export interface OrderItemInput {
     productId: number;
     quantity: number;
 }
-export declare const checkout: (data: CreateOrder) => Promise<{
+export declare const checkout: (data: CreateOrder, userId: number) => Promise<{
     orderItems: ({
         product: {
             name: string;
@@ -15,6 +14,7 @@ export declare const checkout: (data: CreateOrder) => Promise<{
             deletedAt: Date | null;
             price: import("@prisma/client-runtime-utils").Decimal;
             stock: number;
+            image: string;
             categoryId: number | null;
             createdAt: Date;
             updatedAt: Date;
@@ -30,9 +30,9 @@ export declare const checkout: (data: CreateOrder) => Promise<{
         orderId: number;
     })[];
     user: {
-        name: string;
         id: number;
         deletedAt: Date | null;
+        username: string;
         email: string;
         password_hash: string;
         role: string;
@@ -55,6 +55,7 @@ export declare const getAllOrder: () => Promise<{
                 deletedAt: Date | null;
                 price: import("@prisma/client-runtime-utils").Decimal;
                 stock: number;
+                image: string;
                 categoryId: number | null;
                 createdAt: Date;
                 updatedAt: Date;
@@ -70,9 +71,9 @@ export declare const getAllOrder: () => Promise<{
             orderId: number;
         })[];
         user: {
-            name: string;
             id: number;
             deletedAt: Date | null;
+            username: string;
             email: string;
             password_hash: string;
             role: string;
@@ -96,6 +97,7 @@ export declare const getOrderById: (id: string) => Promise<({
             deletedAt: Date | null;
             price: import("@prisma/client-runtime-utils").Decimal;
             stock: number;
+            image: string;
             categoryId: number | null;
             createdAt: Date;
             updatedAt: Date;
@@ -111,9 +113,9 @@ export declare const getOrderById: (id: string) => Promise<({
         orderId: number;
     })[];
     user: {
-        name: string;
         id: number;
         deletedAt: Date | null;
+        username: string;
         email: string;
         password_hash: string;
         role: string;

@@ -3,7 +3,10 @@ import { createOrder, deleteOrder, getAllOrder, getOrderById, updateOrder } from
 import { checkout as checkoutOrder } from "../services/order.service";
 export const checkout = async (req, res) => {
     const data = req.body;
-    const result = await checkoutOrder(data);
+    if (!req.user?.id) {
+        throw new Error("Id tidak ditemukan!");
+    }
+    const result = await checkoutOrder(data, req.user?.id);
     return successResponse(res, "Order berhasil dibuat!!", result, null, 201);
 };
 export const getAll = async (_req, res) => {

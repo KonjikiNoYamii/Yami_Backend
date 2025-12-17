@@ -9,9 +9,9 @@ export declare const getAllUser: () => Promise<{
             userId: number;
         }[];
     } & {
-        name: string;
         id: number;
         deletedAt: Date | null;
+        username: string;
         email: string;
         password_hash: string;
         role: string;
@@ -28,33 +28,33 @@ export declare const getUserById: (id: string) => Promise<({
         userId: number;
     }[];
 } & {
-    name: string;
     id: number;
     deletedAt: Date | null;
+    username: string;
     email: string;
     password_hash: string;
     role: string;
 }) | null>;
-export declare const createUser: (name: string, email: string, password_hash: string) => Promise<{
-    name: string;
+export declare const createUser: (username: string, email: string, password_hash: string) => Promise<{
     id: number;
     deletedAt: Date | null;
+    username: string;
     email: string;
     password_hash: string;
     role: string;
 }>;
 export declare const updateUser: (id: string, data: any) => Promise<{
-    name: string;
     id: number;
     deletedAt: Date | null;
+    username: string;
     email: string;
     password_hash: string;
     role: string;
 }>;
 export declare const deleteUser: (id: string) => Promise<{
-    name: string;
     id: number;
     deletedAt: Date | null;
+    username: string;
     email: string;
     password_hash: string;
     role: string;

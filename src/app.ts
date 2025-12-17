@@ -16,6 +16,7 @@ import routerOrder from './routes/order.route'
 import routerOrderItem from './routes/orderItem.route'
 import authRoutes from './routes/auth.route'
 import routerCategory from './routes/category.route'
+import profileCategory from './routes/profile.route'
 import { successResponse } from "./utils/response";
 import { requestLogger } from "./middleware/logger.middleware";
 
@@ -26,6 +27,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(cors());
 app.use(Express.json());
+app.use(Express.static("public"))
 
 app.use(requestLogger);
 
@@ -50,6 +52,7 @@ app.use('/api/users', routerUser)
 app.use('/api/orders', routerOrder)
 app.use('/api/orderItems', routerOrderItem)
 app.use('/api/category', routerCategory)
+app.use('/api/profile', profileCategory)
 app.use('/api/auth', authRoutes);
 
 

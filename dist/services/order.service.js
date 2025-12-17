@@ -1,6 +1,6 @@
 import { getPrisma } from "../prisma";
 const prisma = getPrisma();
-export const checkout = async (data) => {
+export const checkout = async (data, userId) => {
     return await prisma.$transaction(async (tx) => {
         let total = 0;
         // 1️⃣ Ambil semua product SEKALIGUS (hindari N+1)
@@ -45,7 +45,7 @@ export const checkout = async (data) => {
         // 3️⃣ Buat order + pivot SEKALIGUS (nested write)
         const newOrder = await tx.order.create({
             data: {
-                userId: data.userId,
+                userId,
                 total,
                 orderItems: {
                     create: orderItemsData

@@ -32,6 +32,7 @@ export declare const ModelName: {
     readonly Order: "Order";
     readonly OrderItems: "OrderItems";
     readonly Product: "Product";
+    readonly Profile: "Profile";
     readonly Rarity: "Rarity";
     readonly User: "User";
 };
@@ -89,12 +90,22 @@ export declare const ProductScalarFieldEnum: {
     readonly description: "description";
     readonly price: "price";
     readonly stock: "stock";
+    readonly image: "image";
     readonly categoryId: "categoryId";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
     readonly deletedAt: "deletedAt";
 };
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum];
+export declare const ProfileScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly gender: "gender";
+    readonly address: "address";
+    readonly profilePictureUrl: "profilePictureUrl";
+    readonly userId: "userId";
+};
+export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum];
 export declare const RarityScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
@@ -102,7 +113,7 @@ export declare const RarityScalarFieldEnum: {
 export type RarityScalarFieldEnum = (typeof RarityScalarFieldEnum)[keyof typeof RarityScalarFieldEnum];
 export declare const UserScalarFieldEnum: {
     readonly id: "id";
-    readonly name: "name";
+    readonly username: "username";
     readonly email: "email";
     readonly password_hash: "password_hash";
     readonly deletedAt: "deletedAt";
