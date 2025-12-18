@@ -4,14 +4,40 @@ import { successResponse } from "../utils/response"
 import {
     createOrderItem,
     deleteOrderItem,
-    getAllOrderItem,
+    getAllOrderItems,
     getOrderItemById,
     updateOrderItem
 } from "../services/orderItem.service"
 
-export const getAll = async (_req: Request, res: Response) => {
-    const data = await getAllOrderItem()
-    successResponse(res, "Semua order item berhasil diambil", data)
+export const getAll = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const sortBy = req.query.sortBy as string
+  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
+
+  const search:any = {
+    orderId: req.query.orderId
+      ? Number(req.query.orderId)
+      : undefined,
+    productId: req.query.productId
+      ? Number(req.query.productId)
+      : undefined,
+  }
+
+  const result = await getAllOrderItems({
+    page,
+    limit,
+    search,
+    sortBy,
+    sortOrder,
+  })
+
+  successResponse(res, 'Order items berhasil diambil!', result.orderItems, {
+    page: result.currentPage,
+    limit,
+    total: result.total,
+    totalPages: result.totalPages,
+  })
 }
 
 export const getById = async (req: Request, res: Response) => {

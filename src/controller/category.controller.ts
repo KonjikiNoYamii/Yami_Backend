@@ -1,19 +1,33 @@
 import type { Request, Response } from 'express'
-import { createCategory, deleteCategory, getAllCategory, getCategoryById, updateCategory } from '../services/category.service'
+import { createCategory, deleteCategory, getAllCategories, getCategoryById, updateCategory } from '../services/category.service'
 import { successResponse } from '../utils/response'
 
-export const getAll = async(_req:Request, res:Response)=>{
-    const { categories, total } = await getAllCategory()
+export const getAll = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const sortBy = req.query.sortBy as string
+  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
 
-    successResponse(
-        res,
-        "Kategori telah diambil",
-        {
-            jumlah:total,
-            data:categories
-        }
-    )
+  const search = {
+    name: req.query.name as string
+  }
+
+  const result = await getAllCategories({
+    page,
+    limit,
+    search,
+    sortBy,
+    sortOrder,
+  })
+
+  successResponse(res, 'Category berhasil diambil!', result.categories, {
+    page: result.currentPage,
+    limit,
+    total: result.total,
+    totalPages: result.totalPages,
+  })
 }
+
 
 export const getById = async (req:Request, res:Response) =>{
     if (!req.params.id) {

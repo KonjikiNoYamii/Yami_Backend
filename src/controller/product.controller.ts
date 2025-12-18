@@ -1,21 +1,35 @@
 import type { Request, Response } from "express";{}
-import { createProduct, deleteProduct, getAllProducts, getProductById, searchProducts, updateProduct } from "../services/product.service";
+import { createProduct, deleteProduct, getAllProducts, getProductById, updateProduct } from "../services/product.service";
 import { successResponse } from "../utils/response";
 
-export const getAll = async(_req:Request, res:Response) => {
-    const {products, total} = await getAllProducts()
+export const getAll = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const sortBy = req.query.sortBy as string
+  const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'desc'
 
-    successResponse(
-        res,
-        "Produk berhasil diambil!",
-        {
-        jumlah:total,
-        data:products
-        },
-        null,
-        200        
-    )
+  const search = {
+    name: req.query.name as string | undefined,
+    min_price: req.query.min_price
+      ? Number(req.query.min_price)
+      : undefined,
+    max_price: req.query.max_price
+      ? Number(req.query.max_price)
+      : undefined,
+  }
+
+  const data:any = { page, limit, search, sortBy, sortOrder }
+
+  const result = await getAllProducts(data)
+
+  successResponse(res, "Produk berhasil diambil!", result.products, {
+    page: result.currenPage,
+    limit,
+    total: result.total,
+    totalPages: result.totalPages
+  })
 }
+
 
 export const getById = async(req:Request,res:Response) => {
     if (!req.params.id) {
@@ -26,23 +40,6 @@ export const getById = async(req:Request,res:Response) => {
     successResponse(
         res,
         "ID produk berhasil diambil",
-        product,
-        null,
-        200
-    )
-}
-
-export const search = async(req:Request, res:Response) =>{
-    const {name, min_price,max_price} = req.query
-
-    const product = await searchProducts(
-        name?.toString(),
-        Number(min_price),
-        Number(max_price)
-    )
-    successResponse(
-        res,
-        "Produk tidak ditemukan!",
         product,
         null,
         200

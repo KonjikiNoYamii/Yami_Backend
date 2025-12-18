@@ -1,18 +1,71 @@
+import type { OrderItems } from "../generated/client"
 import { getPrisma } from "../prisma"
 
 const prisma = getPrisma()
 
-export const getAllOrderItem = async () => {
-    const items = await prisma.orderItems.findMany({
-        where: { deletedAt: null },
-        include: {
-            order: true,
-            product: true
-        }
-    })
-
-    return { items, total: items.length }
+interface FindAllOrderItemsParams {
+  page: number
+  limit: number
+  search?: {
+    orderId?: number
+    productId?: number
+  }
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
+
+interface OrderItemsListResponse {
+  orderItems: OrderItems[]
+  total: number
+  totalPages: number
+  currentPage: number
+}
+
+
+export const getAllOrderItems = async (
+  params: FindAllOrderItemsParams
+): Promise<OrderItemsListResponse> => {
+  const { page, limit, search, sortBy, sortOrder } = params
+
+  const skip = (page - 1) * limit
+
+  const whereClause: any = {
+    deletedAt: null,
+  }
+
+  if (search?.orderId) {
+    whereClause.orderId = search.orderId
+  }
+
+  if (search?.productId) {
+    whereClause.productId = search.productId
+  }
+
+  const orderItems = await prisma.orderItems.findMany({
+    skip,
+    take: limit,
+    where: whereClause,
+    orderBy: sortBy
+      ? { [sortBy]: sortOrder ?? 'desc' }
+      : { createdAt: 'desc' },
+    include: {
+      order: true,
+      product: true,
+    },
+  })
+
+  const total = await prisma.orderItems.count({
+    where: whereClause,
+  })
+
+  return {
+    orderItems,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+  }
+}
+
 
 export const getOrderItemById = async (id: string) => {
     return prisma.orderItems.findUnique({

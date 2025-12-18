@@ -1,3 +1,4 @@
+import type { Order } from "../generated/client"
 import { getPrisma } from "../prisma"
 
 const prisma = getPrisma()
@@ -10,6 +11,26 @@ export interface OrderItemInput {
   productId: number
   quantity: number
 }
+
+interface FindAllOrderParams {
+  page: number
+  limit: number
+  search?: {
+    userId?: number
+    minTotal?: number
+    maxTotal?: number
+  }
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+}
+
+interface OrderListResponse {
+  orders: Order[]
+  total: number
+  totalPages: number
+  currentPage: number
+}
+
 
 export const checkout = async (data: CreateOrder, userId:number) => {
   return await prisma.$transaction(async (tx) => {
@@ -86,20 +107,51 @@ const newOrder = await tx.order.create({
     return newOrder
   })
 }
+export const getAllOrders = async (
+  params: FindAllOrderParams
+): Promise<OrderListResponse> => {
+  const { page, limit, search, sortBy, sortOrder } = params
 
-export const getAllOrder = async () => {
-    const orders = await prisma.order.findMany({
-        where: { deletedAt: null },
-        include: {
-            user: true,
-            orderItems: {
-                include: { product: true }
-            }
-        }
-    })
+  const skip = (page - 1) * limit
+  const whereClause: any = {
+    deletedAt: null,
+  }
 
-    return { orders, total: orders.length }
+  if (search?.userId) {
+    whereClause.userId = search.userId
+  }
+
+  if (search?.minTotal || search?.maxTotal) {
+    whereClause.total = {}
+    if (search.minTotal) whereClause.total.gte = search.minTotal
+    if (search.maxTotal) whereClause.total.lte = search.maxTotal
+  }
+
+  const orders = await prisma.order.findMany({
+    skip,
+    take: limit,
+    where: whereClause,
+    orderBy: sortBy
+      ? { [sortBy]: sortOrder ?? 'desc' }
+      : { createdAt: 'desc' },
+    include: {
+      user: true,
+      orderItems: true,
+    },
+  })
+
+  const total = await prisma.order.count({
+    where: whereClause,
+  })
+
+  return {
+    orders,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+  }
 }
+
 
 export const getOrderById = async (id: string) => {
     return prisma.order.findUnique({

@@ -3,19 +3,60 @@ import { getPrisma } from "../prisma";
 
 const prisma = getPrisma()
 
-export const getAllProducts = async():Promise<{products:Product[], total:number }> => {
-    const products = await prisma.product.findMany({
-        where:{
-            deletedAt:null
-        },
-        include:{
-            category:true
+interface FindAllParams {
+    page:number
+    limit:number
+    search?:{
+        name?:string, 
+        min_price?:number,
+        max_price?:number
+    }
+    sortBy?:string
+ sortOrder?:'asc'|'desc'
+}
+interface ProductListResponse{
+    products:Product[], total:number, totalPages:number, currenPage:number 
+}
+
+export const getAllProducts = async(params:FindAllParams):Promise<ProductListResponse> => {
+    const {page, limit, search, sortBy, sortOrder} = params
+
+    const skip = (page - 1) * limit
+
+    const whereClause:any = {
+        deletedAt: null
+    }
+
+    if (search?.name) {
+        whereClause.name = {
+            contains:search.name, mode:'insensitive'
         }
+    }
+    if (search?.min_price) {
+        whereClause.min_price = {
+            gte:search.min_price
+        }
+    }
+    if (search?.max_price) {
+        whereClause.max_price={
+            lte: search.max_price
+        }
+    }
+const products = await prisma.product.findMany({
+  skip,
+  take: limit,
+  where: whereClause,
+  orderBy: sortBy
+    ? { [sortBy]: sortOrder }
+    : { createdAt: 'desc' },
+  include: { category: true }
+})
+
+    const total = await prisma.product.count({
+        where:whereClause
     })
 
-    const total = products.length
-
-    return {products, total}
+    return {products, total, totalPages:Math.ceil(total/limit), currenPage:page}
 
 }
 
@@ -27,25 +68,6 @@ export const getProductById = async(id:string) =>{
             id:numid,
             deletedAt:null
         }
-    })
-}
-
-export const searchProducts = async (name?:string, min_price?:number,max_price?:number):Promise<Product[]> => {
-    return await prisma.product.findMany({
-        where:{
-            ...(name &&{
-                name:{
-                    contains:name,
-                    mode:'insensitive'
-                }
-            }),
-            price:{
-                ...(min_price && {gte:min_price}),
-                ...(max_price && {lte:max_price})
-            },
-            deletedAt:null
-        },
-        include:{category:true}
     })
 }
 

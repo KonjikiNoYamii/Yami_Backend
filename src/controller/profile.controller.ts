@@ -2,18 +2,40 @@ import type { Request, Response } from "express";
 import {
   createProfile,
   deleteProfile,
-  getAllProfile,
+  getAllProfiles,
   getProfileById,
-  searchProfile,
   updateProfile,
 } from "../services/profile.service";
 import { successResponse } from "../utils/response";
 
-export const getAll = async (_req: Request, res: Response) => {
-  const profile = await getAllProfile();
+export const getAll = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const sortBy = req.query.sortBy as string
+  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
 
-  successResponse(res, "Profile berhasil diambil!", profile, null, 200);
-};
+  const search = {
+    name: req.query.name as string,
+    gender: req.query.gender as string, 
+    address: req.query.address as string 
+  }
+
+  const result = await getAllProfiles({
+    page,
+    limit,
+    search,
+    sortBy,
+    sortOrder,
+  })
+
+  successResponse(res, 'Profile berhasil diambil!', result.profiles, {
+    page: result.currenPage,
+    limit,
+    total: result.total,
+    totalPages: result.totalPages,
+  })
+}
+
 
 export const getById = async (req: Request, res: Response) => {
   if (!req.params.id) {
@@ -29,25 +51,11 @@ export const getById = async (req: Request, res: Response) => {
   successResponse(res, "Profile berhasil ditemukan!", profile, null, 200);
 };
 
-export const search = async (req: Request, res: Response) => {
-  const { name, gender, address } = req.query;
-
-  const data = {
-    ...(name && { name: String(name) }),
-    ...(gender && { gender: String(gender) }),
-    ...(address && { address: String(address) }),
-  };
-
-  const result = await searchProfile(data);
-
-  successResponse(res, "Profile berhasil ditemukan!", result, null, 200);
-};
-
 export const create = async (req: Request, res: Response) => {
   const file = req.file;
   const { name, gender, address, userId } = req.body;
 
-  const imageurl = `/public/upload${file?.filename}`;
+  const imageurl = `/public/upload/${file?.filename}`;
 
   const newProfile = {
     name: String(name),

@@ -3,7 +3,7 @@ import { successResponse } from "../utils/response"
 import {
     createOrder,
     deleteOrder,
-    getAllOrder,
+    getAllOrders,
     getOrderById,
     updateOrder,
     type CreateOrder
@@ -27,10 +27,38 @@ export const checkout = async (req: Request, res: Response) => {
   )
 }
 
-export const getAll = async (_req: Request, res: Response) => {
-    const result = await getAllOrder()
-    successResponse(res, "Semua order berhasil diambil", result)
+export const getAll = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const sortBy = req.query.sortBy as string
+  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
+
+  const search:any = {
+    userId: req.query.userId ? Number(req.query.userId) : undefined,
+    minTotal: req.query.minTotal
+      ? Number(req.query.minTotal)
+      : undefined,
+    maxTotal: req.query.maxTotal
+      ? Number(req.query.maxTotal)
+      : undefined,
+  }
+
+  const result = await getAllOrders({
+    page,
+    limit,
+    search,
+    sortBy,
+    sortOrder,
+  })
+
+  successResponse(res, 'Order berhasil diambil!', result.orders, {
+    page: result.currentPage,
+    limit,
+    total: result.total,
+    totalPages: result.totalPages,
+  })
 }
+
 
 export const getById = async (req: Request, res: Response) => {
     if (!req.params.id) {

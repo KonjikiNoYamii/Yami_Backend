@@ -3,11 +3,71 @@ import { getPrisma } from "../prisma";
 
 const prisma = getPrisma()
 
-export const getAllProfile = async():Promise<{profile:Profile[], total:number}> =>{
-    const profile = await prisma.profile.findMany()
-    return {
-        profile:profile, total:profile.length
+interface FindAllProfileParams {
+  page: number
+  limit: number
+  search?: {
+    name?: string
+    gender?: string
+    address?: string
+  }
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+}
+
+interface ProfileListResponse {
+  profiles: Profile[]
+  total: number
+  totalPages: number
+  currenPage: number
+}
+
+export const getAllProfiles = async (
+  params: FindAllProfileParams
+): Promise<ProfileListResponse> => {
+  const { page, limit, search, sortBy, sortOrder } = params
+
+  const skip = (page - 1) * limit
+
+  const whereClause: any = {}
+
+  if (search?.name) {
+    whereClause.name = {
+      contains: search.name,
+      mode: 'insensitive',
     }
+  }
+
+  if (search?.gender) {
+    whereClause.gender = search.gender
+  }
+
+  if (search?.address) {
+    whereClause.address = {
+      contains: search.address,
+      mode: 'insensitive',
+    }
+  }
+
+  const profiles = await prisma.profile.findMany({
+    skip,
+    take: limit,
+    where: whereClause,
+    orderBy: sortBy
+      ? { [sortBy]: sortOrder ?? 'desc' }
+      : { id: 'desc' },
+  })
+
+  const total = await prisma.profile.count({
+    where: whereClause,
+  })
+
+  return {
+    profiles,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currenPage: page,
+  }
 }
 
 export const getProfileById = async(id:string) =>{
@@ -18,34 +78,6 @@ export const getProfileById = async(id:string) =>{
             id:numId
         }
     })
-}
-
-export const searchProfile = async (data: {
-  name?: string
-  gender?: string
-  address?: string
-}) => {
-  return await prisma.profile.findMany({
-    where: {
-      ...(data.name && {
-        name: {
-          contains: data.name,
-          mode: "insensitive",
-        },
-      }),
-
-      ...(data.gender && {
-        gender: data.gender,
-      }),
-
-      ...(data.address && {
-        address: {
-          contains: data.address,
-          mode: "insensitive",
-        },
-      }),
-    },
-  })
 }
 
 export const createProfile = async(data:{name:string, gender:string,address:string,profilePictureUrl:string, userId:number}) =>{

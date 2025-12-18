@@ -27,6 +27,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(cors());
 app.use(Express.json());
+app.set('query parser', 'extended')
 app.use(Express.static("public"))
 
 app.use(requestLogger);

@@ -3,14 +3,66 @@ import { getPrisma } from "../prisma"
 
 const prisma = getPrisma()
 
-export const getAllCategory = async ():Promise<{categories:Category[], total:number}> => {
-    const categories = await prisma.category.findMany({
-        where:{deletedAt:null}
-    })
-    const total = categories.length
-
-    return{ categories, total }
+interface FindAllCategoryParams {
+  page: number
+  limit: number
+  search?: {
+    name?: string
+  }
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
+
+interface CategoryListResponse {
+  categories: Category[]
+  total: number
+  totalPages: number
+  currentPage: number
+}
+
+
+export const getAllCategories = async (
+  params: FindAllCategoryParams
+): Promise<CategoryListResponse> => {
+  const { page, limit, search, sortBy, sortOrder } = params
+
+  const skip = (page - 1) * limit
+
+  const whereClause: any = {
+    deletedAt: null,
+  }
+
+  if (search?.name) {
+    whereClause.name = {
+      contains: search.name,
+      mode: 'insensitive',
+    }
+  }
+
+  const categories = await prisma.category.findMany({
+    skip,
+    take: limit,
+    where: whereClause,
+    orderBy: sortBy
+      ? { [sortBy]: sortOrder ?? 'desc' }
+      : { id: 'desc' },
+    include: {
+      products: true, // bisa dihapus kalau tidak perlu
+    },
+  })
+
+  const total = await prisma.category.count({
+    where: whereClause,
+  })
+
+  return {
+    categories,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+  }
+}
+
 
 export const getCategoryById = async (id:string) =>{
     const numid = parseInt(id)
