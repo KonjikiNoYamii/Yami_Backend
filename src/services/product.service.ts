@@ -1,107 +1,116 @@
-import type { Product } from "../generated/client";
-import { getPrisma } from "../prisma";
-
-const prisma = getPrisma()
+import type { Prisma, Product } from "../generated/client";
+import * as productRepo from "../repositories/product.repository";
 
 interface FindAllParams {
-    page:number
-    limit:number
-    search?:{
-        name?:string, 
-        min_price?:number,
-        max_price?:number
+  page: number;
+  limit: number;
+  search?: {
+    name?: string;
+    min_price?: number;
+    max_price?: number;
+  };
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+interface ProductListResponse {
+  products: Product[];
+  total: number;
+  totalPages: number;
+  currenPage: number;
+}
+
+export const getAllProducts = async (
+  params: FindAllParams
+): Promise<ProductListResponse> => {
+  const { page, limit, search, sortBy, sortOrder } = params;
+
+  const skip = (page - 1) * limit;
+
+  const whereClause: Prisma.ProductWhereInput = {
+    deletedAt: null,
+  };
+
+  if (search?.name) {
+    whereClause.name = {
+      contains: search.name,
+      mode: "insensitive",
+    };
+  }
+
+  if (search?.min_price || search?.max_price) {
+    whereClause.price = {}
+    if (search.min_price) {
+        whereClause.price.gte = search.min_price
     }
-    sortBy?:string
- sortOrder?:'asc'|'desc'
-}
-interface ProductListResponse{
-    products:Product[], total:number, totalPages:number, currenPage:number 
-}
-
-export const getAllProducts = async(params:FindAllParams):Promise<ProductListResponse> => {
-    const {page, limit, search, sortBy, sortOrder} = params
-
-    const skip = (page - 1) * limit
-
-    const whereClause:any = {
-        deletedAt: null
+    if (search.max_price) {
+        whereClause.price.lte = search.max_price
     }
+  }
 
-    if (search?.name) {
-        whereClause.name = {
-            contains:search.name, mode:'insensitive'
-        }
-    }
-    if (search?.min_price) {
-        whereClause.min_price = {
-            gte:search.min_price
-        }
-    }
-    if (search?.max_price) {
-        whereClause.max_price={
-            lte: search.max_price
-        }
-    }
-const products = await prisma.product.findMany({
-  skip,
-  take: limit,
-  where: whereClause,
-  orderBy: sortBy
-    ? { [sortBy]: sortOrder }
-    : { createdAt: 'desc' },
-  include: { category: true }
-})
+  const sortCriteria: Prisma.ProductOrderByWithRelationInput = sortBy
+    ? { [sortBy]: sortOrder || "desc" }
+    : { createdAt: "desc" };
 
-    const total = await prisma.product.count({
-        where:whereClause
-    })
+  const products = await productRepo.findAll(
+    skip,
+    limit,
+    whereClause,
+    sortCriteria
+  );
+  const total = await productRepo.countAll(whereClause);
 
-    return {products, total, totalPages:Math.ceil(total/limit), currenPage:page}
+  return {
+    products,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currenPage: page,
+  };
+};
 
-}
+export const getProductById = async (id: string): Promise<Product> => {
+  const numid = parseInt(id);
 
-export const getProductById = async(id:string) =>{
-    const numid = parseInt(id)
+  const product = await productRepo.findById(numid);
 
-    return await prisma.product.findUnique({
-        where:{
-            id:numid,
-            deletedAt:null
-        }
-    })
-}
+  if (!product) {
+    throw new Error("Product tidak ada!");
+  }
 
-export const createProduct = async(data:{ name: string,description:string,price: number, stock: number, categoryId: number, image:string }):Promise<Product>=>{
-    return await prisma.product.create({
-        data:{
-            name:data.name,
-            description:data.description ?? null,
-            price:data.price,
-            stock:data.stock,
-            categoryId:data.categoryId,
-            image:data.image
-        }
-    })
-}
+  return product;
+};
 
-export const updateProduct = async (id: string, data:Partial<Product>):Promise<Product>=>{
-    const numid = parseInt(id)
+export const createProduct = async (data: {
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  categoryId: number;
+  image: string;
+}): Promise<Product> => {
+  const product = {
+    name: data.name,
+    description: data.description ?? null,
+    price: data.price,
+    stock: data.stock,
+    categoryId: data.categoryId,
+    image: data.image,
+  };
+  return await productRepo.create(product);
+};
 
-    return await prisma.product.update({
-        where:{id:numid, deletedAt:null},
-        data
-    })
-}
+export const updateProduct = async (
+  id: string,
+  data: Partial<Product>
+): Promise<Product> => {
+  const numid = parseInt(id);
 
-export const deleteProduct = async (id:string):Promise<Product> =>{
-    const numid = parseInt(id)
+  return await productRepo.update(numid, data);
+};
 
-    return await prisma.product.update({
-        where:{
-            id:numid, deletedAt:null
-        },
-        data:{
-            deletedAt: new Date()
-        }
-    })
-}
+export const deleteProduct = async (id: string): Promise<Product> => {
+  const numid = parseInt(id);
+
+  return await productRepo.deleted(
+    numid
+  );
+};

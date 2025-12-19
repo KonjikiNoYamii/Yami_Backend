@@ -1,118 +1,146 @@
-import type { Profile } from "../generated/client";
-import { getPrisma } from "../prisma";
-
-const prisma = getPrisma()
+import type { Prisma, Profile } from "../generated/client";
+import * as profileRepo from "../repositories/profile.repository";
 
 interface FindAllProfileParams {
-  page: number
-  limit: number
+  page: number;
+  limit: number;
   search?: {
-    name?: string
-    gender?: string
-    address?: string
-  }
-  sortBy?: string
-  sortOrder?: 'asc' | 'desc'
+    name?: string;
+    gender?: string;
+    address?: string;
+  };
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 interface ProfileListResponse {
-  profiles: Profile[]
-  total: number
-  totalPages: number
-  currenPage: number
+  profiles: Profile[];
+  total: number;
+  totalPages: number;
+  currenPage: number;
 }
 
+/**
+ * Get all profiles
+ */
 export const getAllProfiles = async (
   params: FindAllProfileParams
 ): Promise<ProfileListResponse> => {
-  const { page, limit, search, sortBy, sortOrder } = params
+  const { page, limit, search, sortBy, sortOrder } = params;
 
-  const skip = (page - 1) * limit
+  const skip = (page - 1) * limit;
 
-  const whereClause: any = {}
+  const whereClause: Prisma.ProfileWhereInput = {};
 
   if (search?.name) {
     whereClause.name = {
       contains: search.name,
-      mode: 'insensitive',
-    }
+      mode: "insensitive",
+    };
   }
 
   if (search?.gender) {
-    whereClause.gender = search.gender
+    whereClause.gender = search.gender;
   }
 
   if (search?.address) {
     whereClause.address = {
       contains: search.address,
-      mode: 'insensitive',
-    }
+      mode: "insensitive",
+    };
   }
 
-  const profiles = await prisma.profile.findMany({
-    skip,
-    take: limit,
-    where: whereClause,
-    orderBy: sortBy
-      ? { [sortBy]: sortOrder ?? 'desc' }
-      : { id: 'desc' },
-  })
+  const orderBy: Prisma.ProfileOrderByWithRelationInput =
+    sortBy
+      ? { [sortBy]: sortOrder ?? "desc" }
+      : { id: "desc" };
 
-  const total = await prisma.profile.count({
-    where: whereClause,
-  })
+  const profiles = await profileRepo.findAll(
+    skip,
+    limit,
+    whereClause,
+    orderBy
+  );
+
+  const total = await profileRepo.countAll(whereClause);
 
   return {
     profiles,
     total,
     totalPages: Math.ceil(total / limit),
     currenPage: page,
+  };
+};
+
+/**
+ * Get profile by ID
+ */
+export const getProfileById = async (
+  id: string
+): Promise<Profile> => {
+  const numId = parseInt(id);
+
+  const profile = await profileRepo.findById(numId);
+
+  if (!profile) {
+    throw new Error("Profile tidak ditemukan");
   }
-}
 
-export const getProfileById = async(id:string) =>{
-    const numId = parseInt(id) 
-    
-    return await prisma.profile.findUnique({
-        where:{
-            id:numId
-        }
-    })
-}
+  return profile;
+};
 
-export const createProfile = async(data:{name:string, gender:string,address:string,profilePictureUrl:string, userId:number}) =>{
-    return await prisma.profile.create({
-        data:{
-            name:data.name,
-            gender:data.gender,
-            address:data.address,
-            profilePictureUrl:data.profilePictureUrl,
-            userId:data.userId
-        }
-    })
-}
+/**
+ * Create profile
+ */
+export const createProfile = async (
+  data: {
+    name: string;
+    gender: string;
+    address: string;
+    profilePictureUrl: string;
+    userId: number;
+  }
+): Promise<Profile> => {
+  return await profileRepo.create({
+    name: data.name,
+    gender: data.gender,
+    address: data.address,
+    profilePictureUrl: data.profilePictureUrl,
+    user: {
+      connect: { id: data.userId },
+    },
+  });
+};
 
-export const updateProfile = async(id:string,data:{name:string, gender:string,address:string,profilePictureUrl:string}) =>{
-    const numId = parseInt(id)
+/**
+ * Update profile
+ */
+export const updateProfile = async (
+  id: string,
+  data: {
+    name: string;
+    gender: string;
+    address: string;
+    profilePictureUrl: string;
+  }
+): Promise<Profile> => {
+  const numId = parseInt(id);
 
-    return await prisma.profile.update({
-        where:{
-            id:numId
-        },
-        data:{
-            name:data.name,
-            gender:data.gender,
-            address:data.address,
-            profilePictureUrl:data.profilePictureUrl,
-        }
-    })
-}
+  return await profileRepo.update(numId, {
+    name: data.name,
+    gender: data.gender,
+    address: data.address,
+    profilePictureUrl: data.profilePictureUrl,
+  });
+};
 
-export const deleteProfile = async (id:string) =>{
-    const numId = parseInt(id)
-    return await prisma.profile.delete({
-        where:{
-            id:numId
-        }
-    })
-}
+/**
+ * Delete profile
+ */
+export const deleteProfile = async (
+  id: string
+): Promise<Profile> => {
+  const numId = parseInt(id);
+
+  return await profileRepo.deleted(numId);
+};
