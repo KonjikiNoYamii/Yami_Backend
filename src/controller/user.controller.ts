@@ -1,47 +1,57 @@
-// controllers/user.controller.ts
-import type { Request, Response } from "express"
-import { successResponse } from "../utils/response"
-import {
-    createUser,
-    deleteUser,
-    getAllUser,
-    getUserById,
-    updateUser
-} from "../services/user.service"
+import type { Request, Response } from "express";
+import type { IUserService } from "../services/user.service";
+import { successResponse } from "../utils/response";
 
-export const getAll = async (_req: Request, res: Response) => {
-    const result = await getAllUser()
-    successResponse(res, "Semua user berhasil diambil", result)
+export interface IUserController {
+  getAll(req: Request, res: Response): Promise<void>;
+  getById(req: Request, res: Response): Promise<void>;
+  create(req: Request, res: Response): Promise<void>;
+  update(req: Request, res: Response): Promise<void>;
+  delete(req: Request, res: Response): Promise<void>;
 }
 
-export const getById = async (req: Request, res: Response) => {
+export class UserController implements IUserController {
+  constructor(private userService: IUserService) {}
+
+  getAll = async (_req: Request, res: Response) => {
+    const result = await this.userService.getAllUsers();
+    successResponse(res, "Semua user berhasil diambil", result);
+  };
+
+  getById = async (req: Request, res: Response) => {
+    if (!req.params.id) {
+      throw new Error("Parameter tidak ditemukan!");
+    }
+    const user = await this.userService.getUserById(req.params.id);
+    successResponse(res, "User ditemukan", user);
+  };
+
+  create = async (req: Request, res: Response) => {
+    const { username, email, password_hash } = req.body;
+    const user = await this.userService.createUser(
+      username,
+      email,
+      password_hash
+    );
+    successResponse(res, "User berhasil dibuat", user, null, 201);
+  };
+
+  update = async (req: Request, res: Response) => {
     if (!req.params.id) {
         throw new Error("Paramater tidak ditemukan!")
     }
-    const user = await getUserById(req.params.id)
-    successResponse(res, "User ditemukan", user)
-}
+    const user = await this.userService.updateUser(
+      req.params.id,
+      req.body
+    );
+    successResponse(res, "User berhasil diperbarui", user);
+  };
 
-export const create = async (req: Request, res: Response) => {
-    const { username, email, password_hash } = req.body
-
-    const user = await createUser(username, email, password_hash)
-
-    successResponse(res, "User berhasil dibuat", user, null, 201)
-}
-
-export const update = async (req: Request, res: Response) => {
-     if (!req.params.id) {
+  delete = async (req: Request, res: Response) => {
+    if (!req.params.id) {
         throw new Error("Paramater tidak ditemukan!")
     }
-    const user = await updateUser(req.params.id, req.body)
-    successResponse(res, "User berhasil diperbarui", user)
-}
-
-export const deletedUser = async (req: Request, res: Response) => {
-     if (!req.params.id) {
-        throw new Error("Paramater tidak ditemukan!")
-    }
-    const user = await deleteUser(req.params.id)
-    successResponse(res, "User berhasil dihapus", user)
+    const user = await this.userService.deleteUser(req.params.id);
+    successResponse(res, "User berhasil dihapus", user);
+  };
 }

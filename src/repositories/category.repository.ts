@@ -1,65 +1,75 @@
-import type { Prisma, Category } from "../generated/client"
-import { getPrisma } from "../prisma"
+import type { PrismaClient, Prisma, Category } from "../generated/client";
 
-const prisma = getPrisma()
+export interface ICategoryRepository {
+  findAll(
+    skip: number,
+    take: number,
+    where: Prisma.CategoryWhereInput,
+    orderBy: Prisma.CategoryOrderByWithRelationInput
+  ): Promise<Category[]>;
 
-export const findAll = async (
-  skip: number,
-  take: number,
-  where: Prisma.CategoryWhereInput,
-  orderBy: Prisma.CategoryOrderByWithRelationInput
-): Promise<Category[]> => {
-  return prisma.category.findMany({
-    skip,
-    take,
-    where,
-    orderBy,
-    include: {
-      products: true
-    }
-  })
+  count(where: Prisma.CategoryWhereInput): Promise<number>;
+
+  findById(id: number): Promise<Category | null>;
+
+  findByName(name: string): Promise<Category | null>;
+
+  create(name: string): Promise<Category>;
+
+  update(id: number, data: Prisma.CategoryUpdateInput): Promise<Category>;
+
+  softDelete(id: number): Promise<Category>;
 }
 
-export const countAll = async (
-  where: Prisma.CategoryWhereInput
-): Promise<number> => {
-  return prisma.category.count({ where })
-}
+export class CategoryRepository implements ICategoryRepository {
+  constructor(private prisma: PrismaClient) {}
 
-export const findById = async (id: number): Promise<Category | null> => {
-  return prisma.category.findUnique({
-    where: { id }
-  })
-}
+  async findAll(
+    skip: number,
+    take: number,
+    where: Prisma.CategoryWhereInput,
+    orderBy: Prisma.CategoryOrderByWithRelationInput
+  ) {
+    return this.prisma.category.findMany({
+      skip,
+      take,
+      where,
+      orderBy,
+      include: { products: true },
+    });
+  }
 
-export const findByName = async (name: string): Promise<Category | null> => {
-  return prisma.category.findFirst({
-    where: {
-      name,
-      deletedAt: null
-    }
-  })
-}
+  async count(where: Prisma.CategoryWhereInput) {
+    return this.prisma.category.count({ where });
+  }
 
-export const create = async (name: string): Promise<Category> => {
-  return prisma.category.create({
-    data: { name }
-  })
-}
+  async findById(id: number) {
+    return this.prisma.category.findUnique({ where: { id } });
+  }
 
-export const update = async (
-  id: number,
-  data: Prisma.CategoryUpdateInput
-): Promise<Category> => {
-  return prisma.category.update({
-    where: { id },
-    data
-  })
-}
+  async findByName(name: string) {
+    return this.prisma.category.findFirst({
+      where: { name, deletedAt: null },
+    });
+  }
 
-export const softDelete = async (id: number): Promise<Category> => {
-  return prisma.category.update({
-    where: { id },
-    data: { deletedAt: new Date() }
-  })
+  async create(name: string) {
+    return this.prisma.category.create({
+      data: { name },
+    });
+  }
+
+  async update(id: number, data: Prisma.CategoryUpdateInput) {
+    return this.prisma.category.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async softDelete(id: number) {
+    return this.prisma.category.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
 }

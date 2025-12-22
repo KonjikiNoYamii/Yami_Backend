@@ -1,30 +1,43 @@
-// controllers/orderitem.controller.ts
 import type { Request, Response } from "express"
 import { successResponse } from "../utils/response"
-import {
-    createOrderItem,
-    deleteOrderItem,
-    getAllOrderItems,
-    getOrderItemById,
-    updateOrderItem
-} from "../services/orderItem.service"
+import type { IOrderItemService } from "../services/orderItem.service"
 
-export const getAll = async (req: Request, res: Response) => {
+export interface IOrderItemController {
+  getAll(req: Request, res: Response): Promise<void>
+  getById(req: Request, res: Response): Promise<void>
+  create(req: Request, res: Response): Promise<void>
+  update(req: Request, res: Response): Promise<void>
+  delete(req: Request, res: Response): Promise<void>
+}
+
+export class OrderItemController implements IOrderItemController {
+  constructor(private orderItemService: IOrderItemService) {}
+
+  // ✅ GET ALL
+getAll = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1
   const limit = Number(req.query.limit) || 10
-  const sortBy = req.query.sortBy as string
-  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
+  const sortBy = req.query.sortBy as string | undefined
+  const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined
 
-  const search:any = {
-    orderId: req.query.orderId
-      ? Number(req.query.orderId)
-      : undefined,
-    productId: req.query.productId
-      ? Number(req.query.productId)
-      : undefined,
+  let search: {
+    orderId?: number
+    productId?: number
+  } | undefined
+
+  if (req.query.orderId || req.query.productId) {
+    search = {}
+
+    if (req.query.orderId) {
+      search.orderId = Number(req.query.orderId)
+    }
+
+    if (req.query.productId) {
+      search.productId = Number(req.query.productId)
+    }
   }
 
-  const result = await getAllOrderItems({
+  const result = await this.orderItemService.getAll({
     page,
     limit,
     search,
@@ -32,7 +45,7 @@ export const getAll = async (req: Request, res: Response) => {
     sortOrder,
   })
 
-  successResponse(res, 'Order items berhasil diambil!', result.orderItems, {
+  successResponse(res, "Order items berhasil diambil!", result.orderItems, {
     page: result.currentPage,
     limit,
     total: result.total,
@@ -40,33 +53,50 @@ export const getAll = async (req: Request, res: Response) => {
   })
 }
 
-export const getById = async (req: Request, res: Response) => {
-    if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!")
-    }
-    const item = await getOrderItemById(req.params.id)
-    successResponse(res, "Order item ditemukan!", item)
-}
 
-export const create = async (req: Request, res: Response) => {
+  // ✅ GET BY ID
+  getById = async (req: Request, res: Response) => {
+    if (!req.params.id) {
+      throw new Error("ID tidak ditemukan!")
+    }
+
+    const item = await this.orderItemService.getById(req.params.id)
+
+    successResponse(res, "Order item ditemukan!", item)
+  }
+
+  // ✅ CREATE
+  create = async (req: Request, res: Response) => {
     const { orderId, productId, quantity } = req.body
-    const newItem = await createOrderItem(orderId, productId, quantity)
+
+    const newItem = await this.orderItemService.create({
+      orderId: Number(orderId),
+      productId: Number(productId),
+      quantity: Number(quantity),
+    })
 
     successResponse(res, "Order item berhasil dibuat!", newItem, null, 201)
-}
+  }
 
-export const update = async (req: Request, res: Response) => {
+  // ✅ UPDATE
+  update = async (req: Request, res: Response) => {
     if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!")
+      throw new Error("ID tidak ditemukan!")
     }
-    const updated = await updateOrderItem(req.params.id, req.body)
+
+    const updated = await this.orderItemService.update(req.params.id,req.body)
+
     successResponse(res, "Order item berhasil diperbarui!", updated)
-}
+  }
 
-export const deletedOrderItem = async (req: Request, res: Response) => {
+  // ✅ DELETE (SOFT DELETE)
+  delete = async (req: Request, res: Response) => {
     if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!")
+      throw new Error("ID tidak ditemukan!")
     }
-    const removed = await deleteOrderItem(req.params.id)
+
+    const removed = await this.orderItemService.delete(req.params.id)
+
     successResponse(res, "Order item berhasil dihapus!", removed)
+  }
 }

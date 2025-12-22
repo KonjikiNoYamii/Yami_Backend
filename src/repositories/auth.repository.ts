@@ -1,24 +1,33 @@
-import type { User } from "../generated/client"
-import { getPrisma } from "../prisma"
+import type { PrismaClient, User } from "../generated/client";
 
-const prisma = getPrisma()
-
-export const findUserByEmail = async (email: string): Promise<User | null> => {
-  return prisma.user.findFirst({
-    where: {
-      email,
-      deletedAt: null
-    }
-  })
+export interface IAuthRepository {
+  findByEmail(email: string): Promise<User | null>;
+  create(data: {
+    username: string;
+    email: string;
+    password_hash: string;
+    role: string;
+  }): Promise<User>;
 }
 
-export const createUser = async (data: {
-  username: string
-  email: string
-  password_hash: string
-  role: string
-}): Promise<User> => {
-  return prisma.user.create({
-    data
-  })
+export class AuthRepository implements IAuthRepository {
+  constructor(private prisma: PrismaClient) {}
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        email,
+        deletedAt: null,
+      },
+    });
+  }
+
+  async create(data: {
+    username: string;
+    email: string;
+    password_hash: string;
+    role: string;
+  }): Promise<User> {
+    return this.prisma.user.create({ data });
+  }
 }

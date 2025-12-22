@@ -1,7 +1,7 @@
 import type { Prisma, Profile } from "../generated/client";
-import * as profileRepo from "../repositories/profile.repository";
+import type { IProfileRepository } from "../repositories/profile.repository";
 
-interface FindAllProfileParams {
+export interface FindAllProfileParams {
   page: number;
   limit: number;
   search?: {
@@ -13,134 +13,117 @@ interface FindAllProfileParams {
   sortOrder?: "asc" | "desc";
 }
 
-interface ProfileListResponse {
+export interface ProfileListResponse {
   profiles: Profile[];
   total: number;
   totalPages: number;
-  currenPage: number;
+  currentPage: number;
 }
 
-/**
- * Get all profiles
- */
-export const getAllProfiles = async (
-  params: FindAllProfileParams
-): Promise<ProfileListResponse> => {
-  const { page, limit, search, sortBy, sortOrder } = params;
-
-  const skip = (page - 1) * limit;
-
-  const whereClause: Prisma.ProfileWhereInput = {};
-
-  if (search?.name) {
-    whereClause.name = {
-      contains: search.name,
-      mode: "insensitive",
-    };
-  }
-
-  if (search?.gender) {
-    whereClause.gender = search.gender;
-  }
-
-  if (search?.address) {
-    whereClause.address = {
-      contains: search.address,
-      mode: "insensitive",
-    };
-  }
-
-  const orderBy: Prisma.ProfileOrderByWithRelationInput =
-    sortBy
-      ? { [sortBy]: sortOrder ?? "desc" }
-      : { id: "desc" };
-
-  const profiles = await profileRepo.findAll(
-    skip,
-    limit,
-    whereClause,
-    orderBy
-  );
-
-  const total = await profileRepo.countAll(whereClause);
-
-  return {
-    profiles,
-    total,
-    totalPages: Math.ceil(total / limit),
-    currenPage: page,
-  };
-};
-
-/**
- * Get profile by ID
- */
-export const getProfileById = async (
-  id: string
-): Promise<Profile> => {
-  const numId = parseInt(id);
-
-  const profile = await profileRepo.findById(numId);
-
-  if (!profile) {
-    throw new Error("Profile tidak ditemukan");
-  }
-
-  return profile;
-};
-
-/**
- * Create profile
- */
-export const createProfile = async (
-  data: {
+export interface IProfileService {
+  getAll(params: FindAllProfileParams): Promise<ProfileListResponse>;
+  getById(id: string): Promise<Profile>;
+  create(data: {
     name: string;
     gender: string;
     address: string;
     profilePictureUrl: string;
     userId: number;
-  }
-): Promise<Profile> => {
-  return await profileRepo.create({
-    name: data.name,
-    gender: data.gender,
-    address: data.address,
-    profilePictureUrl: data.profilePictureUrl,
-    user: {
-      connect: { id: data.userId },
-    },
-  });
-};
+  }): Promise<Profile>;
+  update(
+    id: string,
+    data: {
+      name: string;
+      gender: string;
+      address: string;
+      profilePictureUrl: string;
+    }
+  ): Promise<Profile>;
+  delete(id: string): Promise<Profile>;
+}
 
-/**
- * Update profile
- */
-export const updateProfile = async (
-  id: string,
-  data: {
+export class ProfileService implements IProfileService {
+  constructor(private profileRepo: IProfileRepository) {}
+
+  async getAll(params: FindAllProfileParams): Promise<ProfileListResponse> {
+    const { page, limit, search, sortBy, sortOrder } = params;
+
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.ProfileWhereInput = {};
+
+    if (search?.name) {
+      where.name = { contains: search.name, mode: "insensitive" };
+    }
+    if (search?.gender) {
+      where.gender = search.gender;
+    }
+    if (search?.address) {
+      where.address = { contains: search.address, mode: "insensitive" };
+    }
+
+    const orderBy: Prisma.ProfileOrderByWithRelationInput = sortBy
+      ? { [sortBy]: sortOrder ?? "desc" }
+      : { id: "desc" };
+
+    const profiles = await this.profileRepo.findAll(
+      skip,
+      limit,
+      where,
+      orderBy
+    );
+
+    const total = await this.profileRepo.count(where);
+
+    return {
+      profiles,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    };
+  }
+
+  async getById(id: string): Promise<Profile> {
+    const profile = await this.profileRepo.findById(Number(id));
+
+    if (!profile) {
+      throw new Error("Profile tidak ditemukan");
+    }
+
+    return profile;
+  }
+
+  async create(data: {
     name: string;
     gender: string;
     address: string;
     profilePictureUrl: string;
+    userId: number;
+  }): Promise<Profile> {
+    return this.profileRepo.create({
+      name: data.name,
+      gender: data.gender,
+      address: data.address,
+      profilePictureUrl: data.profilePictureUrl,
+      user: {
+        connect: { id: data.userId },
+      },
+    });
   }
-): Promise<Profile> => {
-  const numId = parseInt(id);
 
-  return await profileRepo.update(numId, {
-    name: data.name,
-    gender: data.gender,
-    address: data.address,
-    profilePictureUrl: data.profilePictureUrl,
-  });
-};
+  async update(
+    id: string,
+    data: {
+      name: string;
+      gender: string;
+      address: string;
+      profilePictureUrl: string;
+    }
+  ): Promise<Profile> {
+    return this.profileRepo.update(Number(id), data);
+  }
 
-/**
- * Delete profile
- */
-export const deleteProfile = async (
-  id: string
-): Promise<Profile> => {
-  const numId = parseInt(id);
-
-  return await profileRepo.deleted(numId);
-};
+  async delete(id: string): Promise<Profile> {
+    return this.profileRepo.delete(Number(id));
+  }
+}

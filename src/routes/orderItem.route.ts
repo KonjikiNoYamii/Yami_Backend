@@ -1,12 +1,30 @@
-import { Router } from "express";
-import * as userController from "../controller/orderItem.controller";
+import { Router } from "express"
 
-const router = Router();
+import { OrderItemService } from "../services/orderItem.service"
+import { OrderItemRepository } from "../repositories/orderItem.repository"
+import { OrderItemController } from "../controller/orderItem.controller"
+import prismaInstance from "../prisma"
 
-router.get("/", userController.getAll);
-router.post("/", userController.create);
-router.get("/:id", userController.getById);
-router.put("/:id", userController.update);
-router.delete("/:id", userController.deletedOrderItem);
+const router = Router()
 
-export default router;
+// dependency injection
+const orderItemRepo = new OrderItemRepository(prismaInstance)
+const orderItemService = new OrderItemService(orderItemRepo)
+const orderItemController = new OrderItemController(orderItemService)
+
+// GET ALL (pagination + search + sort)
+router.get("/", orderItemController.getAll)
+
+// GET BY ID
+router.get("/:id", orderItemController.getById)
+
+// CREATE
+router.post("/", orderItemController.create)
+
+// UPDATE
+router.put("/:id", orderItemController.update)
+
+// DELETE (soft delete)
+router.delete("/:id", orderItemController.delete)
+
+export default router

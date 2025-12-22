@@ -7,9 +7,9 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from "./middleware/error.handler";
-import characterRouter from './routes/character.route'
-import routerElement from './routes/element.route'
-import routerRarity from './routes/rarity.routes'
+// import characterRouter from './routes/character.route'
+// import routerElement from './routes/element.route'
+// import routerRarity from './routes/rarity.routes'
 import routerProduct from './routes/product.route'
 import routerUser from './routes/user.route'
 import routerOrder from './routes/order.route'
@@ -45,9 +45,9 @@ app.get("/api/error-test", () => {
   throw new Error("Ini error test");
 });
 
-app.use('/api/characters', characterRouter)
-app.use('/api/element', routerElement)
-app.use('/api/rarity', routerRarity)
+// app.use('/api/characters', characterRouter)
+// app.use('/api/element', routerElement)
+// app.use('/api/rarity', routerRarity)
 app.use('/api/products', routerProduct)
 app.use('/api/users', routerUser)
 app.use('/api/orders', routerOrder)

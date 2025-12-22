@@ -1,8 +1,22 @@
 import type { Request, Response } from "express";{}
-import { createProduct, deleteProduct, getAllProducts, getProductById, updateProduct } from "../services/product.service";
 import { successResponse } from "../utils/response";
+import type { IProductService } from "../services/product.service";
 
-export const getAll = async (req: Request, res: Response) => {
+ interface IProductController{
+    getAll(req:Request , res:Response):Promise<void>;
+    getById(req:Request, res:Response):Promise<void>;
+    create(req:Request, res:Response):Promise<void>;
+    update(req:Request, res:Response):Promise<void>;
+    deletedProduct(req:Request, res:Response):Promise<void>
+}
+
+ export class ProductController implements IProductController{
+    constructor(private productService:IProductService){
+
+    }
+
+
+ getAll = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1
   const limit = Number(req.query.limit) || 10
   const search = req.query.search
@@ -12,7 +26,7 @@ export const getAll = async (req: Request, res: Response) => {
 
   const data:any = { page, limit, search, sortBy, sortOrder }
 
-  const result = await getAllProducts(data)
+  const result = await this.productService.getAllProducts(data)
 
   successResponse(res, "Produk berhasil diambil!", result.products, {
     page: result.currenPage,
@@ -23,11 +37,11 @@ export const getAll = async (req: Request, res: Response) => {
 }
 
 
-export const getById = async(req:Request,res:Response) => {
+ getById = async(req:Request,res:Response) => {
     if (!req.params.id) {
         throw new Error("Parameter tidak ditemukan!")
     }
-    const product = await getProductById(req.params.id)
+    const product = await this.productService.getProductById(req.params.id)
 
     successResponse(
         res,
@@ -38,7 +52,7 @@ export const getById = async(req:Request,res:Response) => {
     )
 }
 
-export const create = async(req:Request,res:Response) =>{
+ create = async(req:Request,res:Response) =>{
     const file = req.file
     if (!file) {
         throw new Error("Image is required")
@@ -56,7 +70,7 @@ export const create = async(req:Request,res:Response) =>{
         image:imageurl
     }
 
-    const products = await createProduct(newProduct)
+    const products = await this.productService.createProduct(newProduct)
 
     successResponse(
         res,
@@ -67,12 +81,12 @@ export const create = async(req:Request,res:Response) =>{
     )
 }
 
-export const update = async (req:Request, res:Response) =>{
+ update = async (req:Request, res:Response) =>{
     if (!req.params.id) {
         throw new Error("Parameter tidak ditemukan!")
     }
 
-    const product = await updateProduct(req.params.id, req.body)
+    const product = await this.productService.updateProduct(req.params.id, req.body)
 
     successResponse(
         res,
@@ -83,12 +97,12 @@ export const update = async (req:Request, res:Response) =>{
     )
 }
 
-export const deletedProduct = async(req:Request, res:Response) =>{
+ deletedProduct = async(req:Request, res:Response) =>{
     if (!req.params.id) {
         throw new Error("ID tidak ditemukan!")
     }
 
-    const product = await deleteProduct(req.params.id)
+    const product = await this.productService.deleteProduct(req.params.id)
 
     successResponse(
         res,
@@ -97,4 +111,5 @@ export const deletedProduct = async(req:Request, res:Response) =>{
         null,
         200
     )
+}
 }

@@ -1,92 +1,103 @@
-import type { Request, Response } from "express"
-import { successResponse } from "../utils/response"
-import {
-    createOrder,
-    deleteOrder,
-    getAllOrders,
-    getOrderById,
-    updateOrder,
-    type CreateOrder
-} from "../services/order.service"
+import type { Request, Response } from "express";
+import { successResponse } from "../utils/response";
+import type { OrderService } from "../services/order.service";
 
-import { checkout as checkoutOrder } from "../services/order.service"
-
-export const checkout = async (req: Request, res: Response) => {
-  const data: CreateOrder = req.body
-  if (!req.user?.id) {
-    throw new Error("Id tidak ditemukan!")
-  }
-  const result = await checkoutOrder(data, req.user?.id)
-
-  return successResponse(
-    res,
-    "Order berhasil dibuat!!",
-    result,
-    null,
-    201
-  )
+interface IOrderController {
+  checkout(req: Request, res: Response): Promise<void>;
+  getAll(req: Request, res: Response): Promise<void>;
+  getById(req: Request, res: Response): Promise<void>;
+  deleteOrder(req: Request, res: Response): Promise<void>;
 }
 
-export const getAll = async (req: Request, res: Response) => {
-  const page = Number(req.query.page) || 1
-  const limit = Number(req.query.limit) || 10
-  const sortBy = req.query.sortBy as string
-  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
+export class OrderController implements IOrderController {
+  constructor(private orderService: OrderService) {}
 
-  const search:any = {
-    userId: req.query.userId ? Number(req.query.userId) : undefined,
-    minTotal: req.query.minTotal
-      ? Number(req.query.minTotal)
-      : undefined,
-    maxTotal: req.query.maxTotal
-      ? Number(req.query.maxTotal)
-      : undefined,
-  }
+  // ✅ CHECKOUT
+  checkout = async (req: Request, res: Response) => {
+    const userId = req.user!.id; // dari auth middleware
+    const data = req.body;
 
-  const result = await getAllOrders({
-    page,
-    limit,
-    search,
-    sortBy,
-    sortOrder,
-  })
+    const order = await this.orderService.checkout(userId, data);
 
-  successResponse(res, 'Order berhasil diambil!', result.orders, {
-    page: result.currentPage,
-    limit,
-    total: result.total,
-    totalPages: result.totalPages,
-  })
-}
+    successResponse(
+      res,
+      "Checkout berhasil",
+      order,
+      null,
+      201
+    );
+  };
 
+  // ✅ GET ALL ORDERS
+  getAll = async (req: Request, res: Response) => {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
 
-export const getById = async (req: Request, res: Response) => {
+    const params:any = {
+      page,
+      limit,
+      search: {
+        userId: req.query.userId
+          ? Number(req.query.userId)
+          : undefined,
+        minTotal: req.query.minTotal
+          ? Number(req.query.minTotal)
+          : undefined,
+        maxTotal: req.query.maxTotal
+          ? Number(req.query.maxTotal)
+          : undefined,
+      },
+      sortBy: req.query.sortBy as string | undefined,
+      sortOrder: (req.query.sortOrder as "asc" | "desc") || "desc",
+    };
+
+    const result = await this.orderService.getAllOrders(params);
+
+    successResponse(
+      res,
+      "Order berhasil diambil!",
+      result.orders,
+      {
+        page: result.currentPage,
+        limit,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+      200
+    );
+  };
+
+  // ✅ GET ORDER BY ID
+  getById = async (req: Request, res: Response) => {
     if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!")
+      throw new Error("Parameter tidak ditemukan!");
     }
-    const order = await getOrderById(req.params.id)
-    successResponse(res, "Order ditemukan!", order)
-}
 
-export const create = async (req: Request, res: Response) => {
-    const { userId, total } = req.body
-    const order = await createOrder(userId, total)
+    const order = await this.orderService.getOrderById(req.params.id);
 
-    successResponse(res, "Order berhasil dibuat!", order, null, 201)
-}
+    successResponse(
+      res,
+      "Detail order berhasil diambil",
+      order,
+      null,
+      200
+    );
+  };
 
-export const update = async (req: Request, res: Response) => {
+  // ✅ SOFT DELETE ORDER
+  deleteOrder = async (req: Request, res: Response) => {
     if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!")
+      throw new Error("ID tidak ditemukan!");
     }
-    const updated = await updateOrder(req.params.id, req.body)
-    successResponse(res, "Order berhasil diperbarui!", updated)
-}
 
-export const deletedOrder = async (req: Request, res: Response) => {
-    if (!req.params.id) {
-        throw new Error("Parameter tidak ditemukan!")
-    }
-    const removed = await deleteOrder(req.params.id)
-    successResponse(res, "Order berhasil dihapus!", removed)
+    const order = await this.orderService.deleteOrder(req.params.id);
+
+    successResponse(
+      res,
+      "Order berhasil dihapus!",
+      order,
+      null,
+      200
+    );
+  };
 }

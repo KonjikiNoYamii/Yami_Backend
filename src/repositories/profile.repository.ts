@@ -1,80 +1,61 @@
-import { Prisma } from "../generated/client";
-import { getPrisma } from "../prisma";
+import type { PrismaClient, Prisma, Profile } from "../generated/client";
 
-const prisma = getPrisma();
+export interface IProfileRepository {
+  findAll(
+    skip: number,
+    take: number,
+    where: Prisma.ProfileWhereInput,
+    orderBy: Prisma.ProfileOrderByWithRelationInput
+  ): Promise<Profile[]>;
 
-/**
- * Find all profiles with pagination & filter
- */
-export const findAll = async (
-  skip: number,
-  take: number,
-  where: Prisma.ProfileWhereInput,
-  orderBy: Prisma.ProfileOrderByWithRelationInput
-) => {
-  return await prisma.profile.findMany({
-    skip,
-    take,
-    where,
-    orderBy,
-  });
-};
+  count(where: Prisma.ProfileWhereInput): Promise<number>;
 
-/**
- * Count profiles
- */
-export const countAll = async (
-  where: Prisma.ProfileWhereInput
-) => {
-  return await prisma.profile.count({
-    where,
-  });
-};
+  findById(id: number): Promise<Profile | null>;
 
-/**
- * Find profile by ID
- */
-export const findById = async (id: number) => {
-  return await prisma.profile.findUnique({
-    where: {
-      id,
-    },
-  });
-};
+  create(data: Prisma.ProfileCreateInput): Promise<Profile>;
 
-/**
- * Create profile
- */
-export const create = async (
-  data: Prisma.ProfileCreateInput
-) => {
-  return await prisma.profile.create({
-    data,
-  });
-};
+  update(id: number, data: Prisma.ProfileUpdateInput): Promise<Profile>;
 
-/**
- * Update profile
- */
-export const update = async (
-  id: number,
-  data: Prisma.ProfileUpdateInput
-) => {
-  return await prisma.profile.update({
-    where: {
-      id,
-    },
-    data,
-  });
-};
+  delete(id: number): Promise<Profile>;
+}
 
-/**
- * Delete profile (hard delete)
- */
-export const deleted = async (id: number) => {
-  return await prisma.profile.delete({
-    where: {
-      id,
-    },
-  });
-};
+export class ProfileRepository implements IProfileRepository {
+  constructor(private prisma: PrismaClient) {}
+
+  async findAll(
+    skip: number,
+    take: number,
+    where: Prisma.ProfileWhereInput,
+    orderBy: Prisma.ProfileOrderByWithRelationInput
+  ) {
+    return this.prisma.profile.findMany({
+      skip,
+      take,
+      where,
+      orderBy,
+    });
+  }
+
+  async count(where: Prisma.ProfileWhereInput) {
+    return this.prisma.profile.count({ where });
+  }
+
+  async findById(id: number) {
+    return this.prisma.profile.findUnique({ where: { id } });
+  }
+
+  async create(data: Prisma.ProfileCreateInput) {
+    return this.prisma.profile.create({ data });
+  }
+
+  async update(id: number, data: Prisma.ProfileUpdateInput) {
+    return this.prisma.profile.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async delete(id: number) {
+    return this.prisma.profile.delete({ where: { id } });
+  }
+}

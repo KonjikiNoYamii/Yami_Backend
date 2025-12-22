@@ -4,8 +4,7 @@ import { PrismaPg } from "../node_modules/@prisma/adapter-pg/dist/index";
 import { PrismaClient } from "./generated/client";
 
 let prisma: PrismaClient;
-
-export const getPrisma = () => {
+const getPrisma = () => {
   if (!prisma) {
     const pool = new Pool({ connectionString: config.DATABASE_URL })
     const adapter = new PrismaPg(pool)
@@ -13,3 +12,6 @@ export const getPrisma = () => {
   }
   return prisma;
 };
+
+const prismaInstance = getPrisma()
+export default prismaInstance

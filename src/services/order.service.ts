@@ -1,186 +1,127 @@
-import type { Order } from "../generated/client"
-import { getPrisma } from "../prisma"
+import type { PrismaClient, Order, Prisma } from "../generated/client";
+import type { IOrderRepository } from "../repositories/order.repository";
 
-const prisma = getPrisma()
-
-export interface CreateOrder {
-  orderItem: OrderItemInput[]
+export interface CreateOrderInput {
+  orderItem: {
+    productId: number;
+    quantity: number;
+  }[];
 }
 
-export interface OrderItemInput {
-  productId: number
-  quantity: number
-}
-
-interface FindAllOrderParams {
-  page: number
-  limit: number
+export interface FindAllOrderParams {
+  page: number;
+  limit: number;
   search?: {
-    userId?: number
-    minTotal?: number
-    maxTotal?: number
-  }
-  sortBy?: string
-  sortOrder?: 'asc' | 'desc'
+    userId?: number;
+    minTotal?: number;
+    maxTotal?: number;
+  };
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
-interface OrderListResponse {
-  orders: Order[]
-  total: number
-  totalPages: number
-  currentPage: number
+export interface OrderListResponse {
+  orders: Order[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
 }
 
+export class OrderService {
+  constructor(
+    private prisma: PrismaClient,
+    private orderRepo: IOrderRepository
+  ) {}
 
-export const checkout = async (data: CreateOrder, userId:number) => {
-  return await prisma.$transaction(async (tx) => {
+  // ✅ CHECKOUT YANG BENAR
+  checkout = async (userId: number, data: CreateOrderInput) => {
+    return this.prisma.$transaction(async (tx) => {
+      let total = 0;
 
-    let total = 0
+      const productIds = data.orderItem.map(i => i.productId);
 
-    // 1️⃣ Ambil semua product SEKALIGUS (hindari N+1)
-    const products = await tx.product.findMany({
-      where: {
-        deletedAt:null,
-        id: {
-          in: data.orderItem.map(i => i.productId)
+      const products = await this.orderRepo.findProductsForCheckout(productIds, tx);
 
+      const orderItems: Prisma.OrderItemsCreateWithoutOrderInput[] = [];
+
+      for (const item of data.orderItem) {
+        const product = products.find(p => p.id === item.productId);
+
+        if (!product) {
+          throw new Error(`Product ${item.productId} tidak ditemukan`);
         }
-      },
-      select: {
-        id: true,
-        price: true,
-        stock: true
-      },
-    })
 
-    // 2️⃣ Hitung total + validasi
-    const orderItemsData = []
-
-    for (const item of data.orderItem) {
-      const product = products.find(p => p.id === item.productId)
-
-      if (!product) {
-        throw new Error(`Product ${item.productId} tidak ditemukan`)
-      }
-
-      if (product.stock < item.quantity) {
-        throw new Error(`Stock produk ${item.productId} tidak cukup`)
-      }
-
-      const price = Number(product.price)
-      total += price * item.quantity
-
-      orderItemsData.push({
-        productId: item.productId,
-        quantity: item.quantity,
-        priceAtTime: product.price
-      })
-
-      // optional tapi recommended
-      await tx.product.update({
-        where: { id: item.productId },
-        data: {
-          stock: { decrement: item.quantity }
+        if (product.stock < item.quantity) {
+          throw new Error(`Stock produk ${item.productId} tidak cukup`);
         }
-      })
-    }
-    // 3️⃣ Buat order + pivot SEKALIGUS (nested write)
-const newOrder = await tx.order.create({
-  data: {
-    userId,
-    total,
-    orderItems: {
-      create: orderItemsData
-    }
-  },
-  include: {
-    user: true,
-    orderItems: {
-      include: {
-        product: true
-      }
-    }
-  }
-})
 
+        total += Number(product.price) * item.quantity;
 
-    return newOrder
-  })
-}
-export const getAllOrders = async (
-  params: FindAllOrderParams
-): Promise<OrderListResponse> => {
-  const { page, limit, search, sortBy, sortOrder } = params
-
-  const skip = (page - 1) * limit
-  const whereClause: any = {
-    deletedAt: null,
-  }
-
-  if (search?.userId) {
-    whereClause.userId = search.userId
-  }
-
-  if (search?.minTotal || search?.maxTotal) {
-    whereClause.total = {}
-    if (search.minTotal) whereClause.total.gte = search.minTotal
-    if (search.maxTotal) whereClause.total.lte = search.maxTotal
-  }
-
-  const orders = await prisma.order.findMany({
-    skip,
-    take: limit,
-    where: whereClause,
-    orderBy: sortBy
-      ? { [sortBy]: sortOrder ?? 'desc' }
-      : { createdAt: 'desc' },
-    include: {
-      user: true,
-      orderItems: true,
-    },
-  })
-
-  const total = await prisma.order.count({
-    where: whereClause,
-  })
-
-  return {
-    orders,
-    total,
-    totalPages: Math.ceil(total / limit),
-    currentPage: page,
-  }
-}
-
-
-export const getOrderById = async (id: string) => {
-    return prisma.order.findUnique({
-        where: { id: parseInt(id) },
-        include: {
-            user: true,
-            orderItems: {
-                include: { product: true }
+        orderItems.push({
+          product:{
+            connect:{
+              id:product.id
             }
-        }
-    })
-}
+          },
+          quantity: item.quantity,
+          priceAtTime: product.price,
+        });
 
-export const createOrder = async (userId: number, total:number) => {
-    return prisma.order.create({
-        data: { userId, total }
-    })
-}
+        await this.orderRepo.decrementStock(product.id, item.quantity, tx);
+      }
 
-export const updateOrder = async (id: string, data: any) => {
-    return prisma.order.update({
-        where: { id: parseInt(id), deletedAt: null },
-        data
-    })
-}
+      return this.orderRepo.createOrderWithItems(
+        {
+          user: { connect: { id: userId } },
+          total,
+          orderItems: {
+            create: orderItems,
+          },
+        },
+        tx
+      );
+    });
+  };
 
-export const deleteOrder = async (id: string) => {
-    return prisma.order.update({
-        where: { id: parseInt(id), deletedAt: null },
-        data: { deletedAt: new Date() }
-    })
+  getAllOrders = async (params: FindAllOrderParams): Promise<OrderListResponse> => {
+    const { page, limit, search, sortBy, sortOrder } = params;
+
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.OrderWhereInput = {
+      deletedAt: null,
+    };
+
+    if (search?.userId) where.userId = search.userId;
+
+    if (search?.minTotal || search?.maxTotal) {
+      where.total = {};
+      if (search.minTotal) where.total.gte = search.minTotal;
+      if (search.maxTotal) where.total.lte = search.maxTotal;
+    }
+
+    const orderBy: Prisma.OrderOrderByWithRelationInput = sortBy
+      ? { [sortBy]: sortOrder ?? "desc" }
+      : { createdAt: "desc" };
+
+    const orders = await this.orderRepo.findAll(skip, limit, where, orderBy);
+    const total = await this.orderRepo.countAll(where);
+
+    return {
+      orders,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    };
+  };
+
+  getOrderById = async (id: string) => {
+    const order = await this.orderRepo.findById(parseInt(id));
+    if (!order) throw new Error("Order tidak ditemukan");
+    return order;
+  };
+
+  deleteOrder = async (id: string) => {
+    return this.orderRepo.softDelete(parseInt(id));
+  };
 }

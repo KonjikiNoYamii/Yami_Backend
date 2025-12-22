@@ -1,102 +1,71 @@
 import type { Request, Response } from "express";
-import {
-  createProfile,
-  deleteProfile,
-  getAllProfiles,
-  getProfileById,
-  updateProfile,
-} from "../services/profile.service";
+import type { IProfileService } from "../services/profile.service";
 import { successResponse } from "../utils/response";
 
-export const getAll = async (req: Request, res: Response) => {
-  const page = Number(req.query.page) || 1
-  const limit = Number(req.query.limit) || 10
-  const sortBy = req.query.sortBy as string
-  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
+export class ProfileController {
+  constructor(private profileService: IProfileService) {}
 
-  const search = {
-    name: req.query.name as string,
-    gender: req.query.gender as string, 
-    address: req.query.address as string 
-  }
+  getAll = async (req: Request, res: Response) => {
+    const result = await this.profileService.getAll({
+      page: Number(req.query.page) || 1,
+      limit: Number(req.query.limit) || 10,
+      sortBy: req.query.sortBy as string,
+      sortOrder: req.query.sortOrder as "asc" | "desc",
+      search: {
+        name: req.query.name as string,
+        gender: req.query.gender as string,
+        address: req.query.address as string,
+      },
+    });
 
-  const result = await getAllProfiles({
-    page,
-    limit,
-    search,
-    sortBy,
-    sortOrder,
-  })
+    successResponse(res, "Profile berhasil diambil!", result.profiles, {
+      page: result.currentPage,
+      limit: Number(req.query.limit) || 10,
+      total: result.total,
+      totalPages: result.totalPages,
+    });
+  };
 
-  successResponse(res, 'Profile berhasil diambil!', result.profiles, {
-    page: result.currenPage,
-    limit,
-    total: result.total,
-    totalPages: result.totalPages,
-  })
+  getById = async (req: Request, res: Response) => {
+    if (!req.params.id) {
+      throw new Error("Paramter tidak ada!")      
+    }
+    const profile = await this.profileService.getById(req.params.id);
+    successResponse(res, "Profile ditemukan!", profile);
+  };
+
+  create = async (req: Request, res: Response) => {
+    const file = req.file;
+
+    const result = await this.profileService.create({
+      ...req.body,
+      userId: Number(req.body.userId),
+      profilePictureUrl: `/public/upload/${file?.filename}`,
+    });
+
+    successResponse(res, "Profile berhasil dibuat!", result, null, 201);
+  };
+
+  update = async (req: Request, res: Response) => {
+    const file = req.file;
+
+    if (!req.params.id) {
+      throw new Error("Paramter tidak ada!")      
+    }
+
+    const result = await this.profileService.update(req.params.id, {
+      ...req.body,
+      profilePictureUrl: `/public/upload/${file?.filename}`,
+    });
+
+    successResponse(res, "Profile berhasil diupdate!", result, null, 201);
+  };
+
+  delete = async (req: Request, res: Response) => {
+    if (!req.params.id) {
+      throw new Error("Paramter tidak ada!")      
+    }
+    const result = await this.profileService.delete(req.params.id);
+    successResponse(res, "Profile berhasil dihapus!", result);
+  };
 }
-
-
-export const getById = async (req: Request, res: Response) => {
-  if (!req.params.id) {
-    throw new Error("Parameter tidak ditemukan!");
-  }
-
-  const profile = await getProfileById(req.params.id);
-
-  if (!profile) {
-    throw new Error("Profile tidak ditemukan!")
-  }
-
-  successResponse(res, "Profile berhasil ditemukan!", profile, null, 200);
-};
-
-export const create = async (req: Request, res: Response) => {
-  const file = req.file;
-  const { name, gender, address, userId } = req.body;
-
-  const imageurl = `/public/upload/${file?.filename}`;
-
-  const newProfile = {
-    name: String(name),
-    gender: String(gender),
-    address: String(address),
-    userId: Number(userId),
-    profilePictureUrl: imageurl,
-  };
-  const result = await createProfile(newProfile);
-
-  successResponse(res, "Profile berhasil dibuat!", result, null, 201);
-};
-
-export const update = async (req: Request, res: Response) => {
-  if (!req.params.id) {
-    throw new Error("Parameter tidak ditemukan!");
-  }
-  const numId = req.params.id;
-  const file = req.file;
-  const { name, gender, address } = req.body;
-
-  const imageurl = `/public/upload${file?.filename}`;
-
-  const profile = {
-    name: String(name),
-    gender: String(gender),
-    address: String(address),
-    profilePictureUrl: imageurl,
-  };
-
-  const result = await updateProfile(numId, profile);
-
-  successResponse(res, "Profile berhasil diupdate", result, null, 201);
-};
-
-export const deleted = async (req: Request, res: Response) => {
-  if (!req.params.id) {
-    throw new Error("Parameter tidak ditemukan!!");
-  }
-
-  const del = await deleteProfile(req.params.id);
-
-  successResponse(res, "Profile berhasil dihapus!", del, null, 200);
-};
