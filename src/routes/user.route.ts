@@ -12,6 +12,7 @@ const userService = new UserService(userRepo);
 const userController = new UserController(userService);
 
 router.get("/", userController.getAll);
+router.get("/stats", userController.getStats)
 router.post("/", userController.create);
 router.get("/:id", userController.getById);
 router.put("/:id", userController.update);

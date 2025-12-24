@@ -27,6 +27,11 @@ router.get(
   asyncHandler(orderController.getAll)
 );
 
+router.get(
+  "/stats",
+  orderController.getStats
+)
+
 // ✅ GET ORDER BY ID
 router.get(
   "/:id",

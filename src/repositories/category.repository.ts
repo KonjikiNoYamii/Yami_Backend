@@ -72,4 +72,5 @@ export class CategoryRepository implements ICategoryRepository {
       data: { deletedAt: new Date() },
     });
   }
+
 }

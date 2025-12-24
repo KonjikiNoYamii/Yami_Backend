@@ -1,4 +1,4 @@
-import type { PrismaClient, User } from "../generated/client";
+import type { Prisma, PrismaClient, User } from "../generated/client";
 
 export interface IUserRepository {
   findAll(): Promise<User[]>;
@@ -14,6 +14,11 @@ export interface IUserRepository {
   }): Promise<User>;
   update(id: number, data: Partial<User>): Promise<User>;
   softDelete(id: number): Promise<User>;
+  getStats():Promise<Prisma.GetUserAggregateType<{
+    _count:{
+      id:true
+    }
+  }>>
 }
 
 export class UserRepository implements IUserRepository {
@@ -22,14 +27,14 @@ export class UserRepository implements IUserRepository {
   async findAll(): Promise<User[]> {
     return this.prisma.user.findMany({
       where: { deletedAt: null },
-      include: { orders: true },
+      include: { profile:true,orders: true },
     });
   }
 
   async findById(id: number): Promise<User | null> {
     return this.prisma.user.findFirst({
       where: { id, deletedAt: null },
-      include: { orders: true },
+      include: { profile:true ,orders: true },
     });
   }
 
@@ -66,4 +71,12 @@ export class UserRepository implements IUserRepository {
       data: { deletedAt: new Date() },
     });
   }
+
+  async getStats() {
+  return this.prisma.user.aggregate({
+    _count: { id: true },
+  });
+}
+
+
 }

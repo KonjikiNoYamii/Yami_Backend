@@ -3,4 +3,4 @@ model Category {
   name      String
   products  Product[] // 1 Category -> Banyak Product
   deletedAt DateTime?
-}
+} 

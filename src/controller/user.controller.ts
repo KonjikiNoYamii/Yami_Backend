@@ -54,4 +54,16 @@ export class UserController implements IUserController {
     const user = await this.userService.deleteUser(req.params.id);
     successResponse(res, "User berhasil dihapus", user);
   };
+
+  getStats = async (_req:Request, res:Response) =>{
+    const stats = await this.userService.exec()
+
+    successResponse(
+      res,
+      "User berhasil diambil!",
+      stats,
+      null,
+      200
+    )
+  }
 }

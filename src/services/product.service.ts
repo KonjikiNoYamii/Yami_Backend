@@ -32,6 +32,7 @@ export interface IProductService {
   }): Promise<Product>;
   updateProduct(id: string, data: Partial<Product>): Promise<Product>;
   deleteProduct(id: string): Promise<Product>;
+  exec():Promise<{overview:any,byCategory:any}>
 }
 
 export class ProductService implements IProductService {
@@ -132,4 +133,14 @@ export class ProductService implements IProductService {
 
     return await this.productRepo.softDelete(numid);
   };
+
+  exec = async() =>{
+    const stats = await this.productRepo.getStats()
+    const categoryStats = await this.productRepo.getProductByCategoryStats()
+
+    return{
+      overview:stats,
+      byCategory:categoryStats
+    }
+  }
 }

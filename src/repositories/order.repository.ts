@@ -1,4 +1,5 @@
 import type { Prisma, PrismaClient, Order } from "../generated/client";
+import type { Decimal } from "../generated/internal/prismaNamespace";
 
 export interface IOrderRepository {
   findProductsForCheckout(
@@ -35,6 +36,20 @@ export interface IOrderRepository {
   findById(id: number): Promise<Order | null>;
 
   softDelete(id: number): Promise<Order>;
+
+  getStats():Promise<Prisma.GetOrderAggregateType<{
+    _count:{id:true},
+      _sum:{total:true},
+      _min:{total:true},
+      _max:{total:true}
+  }>>;
+
+  getOrderStatsByUser():Promise<(Prisma.PickEnumerable<Prisma.OrderGroupByOutputType, "userId"[] & {
+    _sum:{total:Decimal | null}
+    _count:{id:number}
+
+  }>[])>
+
 }
 
 export class OrderRepository implements IOrderRepository {
@@ -108,4 +123,22 @@ export class OrderRepository implements IOrderRepository {
       data: { deletedAt: new Date() },
     });
   }
+  
+  async getStats(){
+    return this.prisma.order.aggregate({
+      _count:{id:true},
+      _sum:{total:true},
+      _min:{total:true},
+      _max:{total:true}
+    })
+  }
+
+  async getOrderStatsByUser(){
+    return this.prisma.order.groupBy({
+      by:['userId'],
+      _count:{id:true},
+      _sum:{total:true}
+    })
+  }
+
 }

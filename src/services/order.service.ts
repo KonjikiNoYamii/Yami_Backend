@@ -31,6 +31,7 @@ export class OrderService {
   constructor(
     private prisma: PrismaClient,
     private orderRepo: IOrderRepository
+
   ) {}
 
   // ✅ CHECKOUT YANG BENAR
@@ -124,4 +125,15 @@ export class OrderService {
   deleteOrder = async (id: string) => {
     return this.orderRepo.softDelete(parseInt(id));
   };
+
+  exec = async () =>{
+    const stats = await this.orderRepo.getStats()
+    const userStats = await this.orderRepo.getOrderStatsByUser()
+
+    return {
+      overview:stats,
+      byUser:userStats
+    }
+
+  }
 }

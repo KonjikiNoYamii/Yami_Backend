@@ -100,4 +100,16 @@ export class OrderController implements IOrderController {
       200
     );
   };
+
+  getStats = async (_req:Request, res:Response)=>{
+    const stats = await this.orderService.exec()
+
+    successResponse(
+      res,
+      "Order berhasil diambil!",
+      stats,
+      null,
+      200
+    )
+  }
 }

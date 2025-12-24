@@ -11,6 +11,7 @@ export interface IUserService {
   ): Promise<User>;
   updateUser(id: string, data: Partial<User>): Promise<User>;
   deleteUser(id: string): Promise<User>;
+  exec():Promise<{overview:any}>
 }
 
 export class UserService implements IUserService {
@@ -56,5 +57,13 @@ export class UserService implements IUserService {
 
   async deleteUser(id: string): Promise<User> {
     return this.userRepo.softDelete(Number(id));
+  }
+
+  async exec(){
+    const overview = await this.userRepo.getStats()
+
+    return{
+      overview
+    }
   }
 }

@@ -112,4 +112,15 @@ import type { IProductService } from "../services/product.service";
         200
     )
 }
+    getStats = async (_req:Request,res:Response) =>{
+        const stats = await this.productService.exec()
+
+        successResponse(
+            res,
+            "Produk berhasil diambil",
+            stats,
+            null,
+            200
+        )
+    }
 }
