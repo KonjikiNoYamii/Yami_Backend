@@ -7,6 +7,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from "./middleware/error.handler";
+import swaggerUi from 'swagger-ui-express'
 // import characterRouter from './routes/character.route'
 // import routerElement from './routes/element.route'
 // import routerRarity from './routes/rarity.routes'
@@ -19,6 +20,7 @@ import routerCategory from './routes/category.route'
 import profileCategory from './routes/profile.route'
 import { successResponse } from "./utils/response";
 import { requestLogger } from "./middleware/logger.middleware";
+import swaggerSpec from "./utils/swagger";
 
 const app: Application = Express();
 
@@ -41,6 +43,8 @@ app.get("/", (req: Request, res: Response) => {
   }, null, 200)
 });
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
 app.get("/api/error-test", () => {
   throw new Error("Ini error test");
 });
@@ -51,9 +55,9 @@ app.get("/api/error-test", () => {
 app.use('/api/products', routerProduct)
 app.use('/api/users', routerUser)
 app.use('/api/orders', routerOrder)
-app.use('/api/orderItems', routerOrderItem)
+app.use('/api/order-items', routerOrderItem)
 app.use('/api/category', routerCategory)
-app.use('/api/profile', profileCategory)
+app.use('/api/profiles', profileCategory)
 app.use('/api/auth', authRoutes);
 
 
