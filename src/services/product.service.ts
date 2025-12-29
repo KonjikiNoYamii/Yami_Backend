@@ -30,7 +30,14 @@ export interface IProductService {
     categoryId: number;
     image: string;
   }): Promise<Product>;
-  updateProduct(id: string, data: Partial<Product>): Promise<Product>;
+  updateProduct(id: string, data: {
+    name?: string;
+    description?: string;
+    price?: number;
+    stock?: number;
+    categoryId?: number;
+    image?: string;
+  }): Promise<Product>;
   deleteProduct(id: string): Promise<Product>;
   exec():Promise<{overview:any,byCategory:any}>
 }
@@ -121,11 +128,26 @@ export class ProductService implements IProductService {
 
   updateProduct = async (
     id: string,
-    data: Partial<Product>
+    data: {
+    name?: string,
+    description?: string,
+    price?: number,
+    stock?: number,
+    categoryId?: number,
+    image?: string,
+  }
   ): Promise<Product> => {
     const numid = parseInt(id);
 
-    return await this.productRepo.update(numid, data);
+    const products = {
+      name:String(data.name),
+      description:String(data.description),
+      price:Number(data.price),
+      stock:Number(data.stock),
+      categoryId:Number(data.categoryId),
+      image:String(data.image)
+    }
+    return await this.productRepo.update(numid, products);
   };
 
   deleteProduct = async (id: string): Promise<Product> => {

@@ -93,7 +93,7 @@ import type { IProductService } from "../services/product.service";
         "Produk berhasil di update",
         product,
         null,
-        201
+        200
     )
 }
 

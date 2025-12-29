@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient, Order } from "../generated/client";
-import type { Decimal } from "../generated/internal/prismaNamespace";
+import type { Decimal } from "../generated/runtime/client";
 
 export interface IOrderRepository {
   findProductsForCheckout(
@@ -8,7 +8,7 @@ export interface IOrderRepository {
   ): Promise<
     {
       id: number;
-      price: Prisma.Decimal;
+      price: Decimal;
       stock: number;
     }[]
   >;

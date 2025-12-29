@@ -178,7 +178,8 @@ router.post(
  *       200:
  *         description: Produk berhasil diupdate
  */
-router.put("/:id", controller.update);
+router.put("/:id",  authenticate,
+  upload.single("image"), controller.update);
 
 /**
  * @swagger
